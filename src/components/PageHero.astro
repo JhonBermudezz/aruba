@@ -1,13 +1,14 @@
 ---
 import { img } from '../data/site.js';
-const { crumbs = [], title, intro, facts = [], cta, secondary, image } = Astro.props;
+import { t } from '../i18n.js';
+const { crumbs = [], title, intro, facts = [], cta, secondary, image, lang = 'en' } = Astro.props;
 const sizes = image?.sizes || [640, 1000];
 ---
 <header class={`page-hero${image ? '' : ' page-hero--text'}`}>
   <div class="container page-hero__grid">
     <div class="page-hero__text">
       {crumbs.length > 0 && (
-        <nav class="crumbs" aria-label="Breadcrumb">
+        <nav class="crumbs" aria-label={t(lang).breadcrumb}>
           <ol>
             {crumbs.map((c, i) => <li>{i < crumbs.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}
           </ol>

@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { getData, t, route, routePair } from '../i18n.js';
+import { breadcrumbSchema, faqSchema } from '../data/schema.js';
+
+const { lang = 'en' } = Astro.props;
+const ui = t(lang);
+const { FAQS, FAQ_GROUPS } = getData(lang);
+const C = {
+  en: {
+    title: 'Beach picnic FAQ: prices, booking and weather | One Happy Picnic Aruba',
+    description: 'Answers about our beach picnics in Aruba: prices, deposits, cancellation, weather, beaches, proposals, birthdays and charcuterie board delivery.',
+    h1: 'Questions about our picnics',
+    intro: 'Prices, booking, weather and the details of each picnic. Message us on Instagram or WhatsApp if your question is not here.',
+    topics: 'FAQ topics',
+  },
+  es: {
+    title: 'Preguntas frecuentes: precios, reservas y clima | One Happy Picnic Aruba',
+    description: 'Respuestas sobre nuestros picnics en la playa en Aruba: precios, abonos, cancelación, clima, playas, propuestas, cumpleaños y entrega de tablas de charcutería.',
+    h1: 'Preguntas sobre nuestros picnics',
+    intro: 'Precios, reservas, clima y los detalles de cada picnic. Escríbenos por Instagram o WhatsApp si tu pregunta no está aquí.',
+    topics: 'Temas de preguntas',
+  },
+}[lang];
+const crumbs = [{ href: route(lang, 'home'), label: ui.home }, { href: route(lang, 'faq'), label: ui.faq }];
+const allKeys = FAQ_GROUPS.flatMap((g) => g.keys);
+---
+<Base lang={lang} alt={routePair('faq')} title={C.title} description={C.description} jsonld={[faqSchema(allKeys, lang), breadcrumbSchema(crumbs)]}>
+  <PageHero lang={lang} crumbs={crumbs} title={C.h1} intro={C.intro}>
+    <nav class="faq-jump" aria-label={C.topics}>
+      {FAQ_GROUPS.map((g) => <a href={`#${g.id}`}>{g.title}</a>)}
+    </nav>
+  </PageHero>
+  <section class="section section--tight">
+    <div class="container faq-groups">
+      {FAQ_GROUPS.map((g) => (
+        <section class="faq-group reveal" id={g.id} aria-labelledby={`${g.id}-title`}>
+          <h2 class="h3" id={`${g.id}-title`}>{g.title}</h2>
+          <div class="faq">
+            {g.keys.map((k) => (
+              <details>
+                <summary>{FAQS[k].q} <svg class="icon"><use href="#i-plus"/></svg></summary>
+                <div class="faq__answer">{FAQS[k].a.map((p) => <p>{p}</p>)}</div>
+              </details>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
+  <FinalCta lang={lang} />
+</Base>

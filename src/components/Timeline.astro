@@ -1,7 +1,9 @@
 ---
 import Pill from './Pill.astro';
 import { img } from '../data/site.js';
-const { data, id = 'how' } = Astro.props;
+import { t } from '../i18n.js';
+const { data, id = 'how', lang = 'en' } = Astro.props;
+const live = t(lang).howLive;
 const words = data.title.split(' ');
 const cut = Math.ceil(words.length / 2);
 ---
@@ -9,7 +11,7 @@ const cut = Math.ceil(words.length / 2);
   <div class="container">
     <div class="section-head reveal">
       <h2 class="h2" id={`${id}-title`}>{words.slice(0, cut).join(' ')} <Pill file={data.pill} /> {words.slice(cut).join(' ')}</h2>
-      {data.live && <p class="lead">The times below follow <span data-how-day>today&rsquo;s</span> sunset in Aruba.</p>}
+      {data.live && <p class="lead">{live[0]} <span data-how-day>{live[1]}</span> {live[2]}</p>}
     </div>
     <div class="how__grid">
       <div class="how__media" aria-hidden="true">

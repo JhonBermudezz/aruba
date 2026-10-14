@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { SITE, img } from '../data/site.js';
+import { t, route, routePair } from '../i18n.js';
+import { getPosts, postHref, formatDate } from '../blog.js';
+import { breadcrumbSchema } from '../data/schema.js';
+
+const { lang = 'en' } = Astro.props;
+const ui = t(lang);
+const posts = getPosts(lang);
+const C = {
+  en: {
+    title: 'Beach picnic planning guides for Aruba | One Happy Picnic blog',
+    description: 'Planning guides from the One Happy Picnic team in Aruba: sunset times, beaches, proposals, birthdays and what to bring to a picnic on the sand.',
+    h1: 'Notes from the beach',
+    intro: 'Planning guides from the team that sets up picnics on Eagle Beach and Surfside. Sunset times, beaches and what to bring.',
+    read: 'Read the guide', min: (n) => `${n} min read`,
+  },
+  es: {
+    title: 'Guías para planear un picnic en la playa en Aruba | Blog de One Happy Picnic',
+    description: 'Guías del equipo de One Happy Picnic en Aruba: horas del atardecer, playas, propuestas, cumpleaños y qué llevar a un picnic en la arena.',
+    h1: 'Notas desde la playa',
+    intro: 'Guías del equipo que monta picnics en Eagle Beach y Surfside. Horas del atardecer, playas y qué llevar.',
+    read: 'Leer la guía', min: (n) => `${n} min de lectura`,
+  },
+}[lang];
+const crumbs = [{ href: route(lang, 'home'), label: ui.home }, { href: route(lang, 'blog'), label: ui.blog }];
+const blog = {
+  '@context': 'https://schema.org', '@type': 'Blog', name: C.h1, inLanguage: lang, url: `${SITE.url}${route(lang, 'blog')}`,
+  publisher: { '@id': `${SITE.url}/#business` },
+  blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title, datePublished: p.date, url: `${SITE.url}${postHref(lang, p.slug)}` })),
+};
+---
+<Base lang={lang} alt={routePair('blog')} title={C.title} description={C.description} jsonld={[blog, breadcrumbSchema(crumbs)]}>
+  <PageHero lang={lang} crumbs={crumbs} title={C.h1} intro={C.intro} />
+  <section class="section section--tight" aria-label={ui.blog}>
+    <div class="container">
+      <ul class="posts">
+        {posts.map((p, i) => (
+          <li class={`post-card reveal${i === 0 ? ' post-card--feature' : ''}`}>
+            <div class="post-card__media">
+              <img src={img(`${p.image}-640.webp`)} srcset={`${img(`${p.image}-640.webp`)} 640w, ${img(`${p.image}-1000.webp`)} 1000w`} sizes={i === 0 ? '(min-width: 1024px) 560px, 100vw' : '(min-width: 1024px) 380px, 100vw'} width="1000" height="1250" loading={i === 0 ? 'eager' : 'lazy'} alt={p.imageAlt}>
+            </div>
+            <div class="post-card__body">
+              <p class="post-meta"><span>{p.category}</span><span><time datetime={String(p.date).slice(0, 10)}>{formatDate(lang, p.date)}</time></span><span>{C.min(p.readMinutes)}</span></p>
+              <h2><a class="post-card__link" href={postHref(lang, p.slug)}>{p.title}</a></h2>
+              <p>{p.description}</p>
+              <span class="text-link" aria-hidden="true">{C.read} <svg class="icon"><use href="#i-arrow-right"/></svg></span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+  <FinalCta lang={lang} />
+</Base>

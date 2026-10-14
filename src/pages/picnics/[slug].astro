@@ -1,50 +1,9 @@
 ---
-import Base from '../../layouts/Base.astro';
-import PageHero from '../../components/PageHero.astro';
-import Included from '../../components/Included.astro';
-import Timeline from '../../components/Timeline.astro';
-import Polaroids from '../../components/Polaroids.astro';
-import Reviews from '../../components/Reviews.astro';
-import Faq from '../../components/Faq.astro';
-import OtherPicnics from '../../components/OtherPicnics.astro';
-import FinalCta from '../../components/FinalCta.astro';
-import { EXPERIENCES, TIMELINES } from '../../data/site.js';
-import { breadcrumbSchema, faqSchema, serviceSchema } from '../../data/schema.js';
+import View from '../../views/Picnic.astro';
+import { EXPERIENCES } from '../../data/site.js';
 
 export function getStaticPaths() {
   return EXPERIENCES.map((e) => ({ params: { slug: e.slug }, props: { e } }));
 }
-const { e } = Astro.props;
-const crumbs = [{ href: '/', label: 'Home' }, { href: '/picnics/', label: 'Picnics' }, { href: `/picnics/${e.slug}/`, label: e.name }];
-const bookHref = `/book/#${e.slug}`;
-const short = e.name.toLowerCase();
 ---
-<Base
-  title={e.seo.title}
-  description={e.seo.description}
-  image={`/assets/img/${e.card.img}-960.webp`}
-  imageAlt={e.card.alt}
-  jsonld={[serviceSchema(e), breadcrumbSchema(crumbs), faqSchema(e.faqs)]}
->
-  <PageHero
-    crumbs={crumbs}
-    title={e.h1}
-    intro={e.intro}
-    facts={e.facts}
-    cta={{ href: bookHref, label: e.slug === 'charcuterie-boards' ? 'Order a board' : 'Book this picnic' }}
-    image={e.hero}
-  />
-  <Included
-    heading={e.slug === 'charcuterie-boards' ? 'On every board' : `Included in your ${short}`}
-    lead={e.includedLead}
-    items={e.included}
-    extras={e.extras}
-    photo={e.slug === 'charcuterie-boards' ? { file: 'p-charcuterie', alt: 'A round wooden charcuterie board with strawberries, chocolates, salami and cheese', caption: 'A board for two', note: 'ready to eat.' } : undefined}
-  />
-  <Timeline data={TIMELINES[e.timeline]} />
-  <Polaroids keys={e.photos} before="Photos from" after="real setups" pill="pill-teepee.webp" />
-  <Reviews keys={e.reviews} before="Reviews from" pill="pill-kiss.webp" after="guests" />
-  <Faq keys={e.faqs} heading={e.faqTitle} />
-  <OtherPicnics exclude={e.slug} />
-  <FinalCta href={bookHref} title={e.slug === 'charcuterie-boards' ? 'Order your board a day ahead' : 'Pick a date and we will set the table'} text={e.slug === 'charcuterie-boards' ? 'Pickup or delivery to your hotel, villa or boat.' : 'Setup, food, drinks and cleanup are included in every picnic.'} label={e.slug === 'charcuterie-boards' ? 'Order a board' : 'Book this picnic'} />
-</Base>
+<View e={Astro.props.e} lang="en" />

@@ -1,23 +1,49 @@
 ---
 import Pill from './Pill.astro';
-import { EXPERIENCES, SITE } from '../data/site.js';
-const { id = 'book', asPageTitle = false } = Astro.props;
+import { SITE } from '../data/site.js';
+import { getData, expSlug } from '../i18n.js';
+const { id = 'book', asPageTitle = false, lang = 'en' } = Astro.props;
+const { EXPERIENCES } = getData(lang);
 const Heading = asPageTitle ? 'h1' : 'h2';
+const T = {
+  en: {
+    title: ['Request your', 'date'], lead: 'Send us the date and the occasion. We reply on WhatsApp to confirm availability.',
+    steps: ['We reply with availability for your date and beach.', 'Choose colors, menu and extras like cake, photographer or marquee letters.', 'Pay your deposit through a secure link and get the map pin of your spot.'],
+    wa: 'Message us on WhatsApp', experience: 'Experience', date: 'Date', guests: 'Guests', more: '11 or more',
+    hint: "Pick a date to see that day's sunset time in Aruba.", timeOfDay: 'Time of day',
+    times: [['golden', 'Golden hour', 'sun-horizon'], ['stars', 'Under the stars', 'moon-stars'], ['morning', 'Morning', 'sparkle']],
+    name: 'Your name', email: 'Email', phone: 'WhatsApp number', opt: '(optional)', notes: 'Anything we should know?',
+    notesPh: 'The occasion, colors you love, allergies, or the surprise you are planning',
+    send: 'Send my request', noPay: 'No payment now. We confirm availability first.',
+    ready: 'Your request is ready to send', readyCopy: 'Send it to us and we will reply with availability for your date.',
+    open: 'Open WhatsApp', copy: 'Copy message', edit: 'Edit request',
+  },
+  es: {
+    title: ['Pide tu', 'fecha'], lead: 'Envíanos la fecha y la ocasión. Te respondemos por WhatsApp para confirmar disponibilidad.',
+    steps: ['Te respondemos con la disponibilidad para tu fecha y playa.', 'Eliges colores, menú y extras como pastel, fotógrafo o letras iluminadas.', 'Pagas el abono con un link seguro y recibes el pin de tu lugar.'],
+    wa: 'Escríbenos por WhatsApp', experience: 'Experiencia', date: 'Fecha', guests: 'Personas', more: '11 o más',
+    hint: 'Elige una fecha para ver la hora del atardecer de ese día en Aruba.', timeOfDay: 'Momento del día',
+    times: [['golden', 'Hora dorada', 'sun-horizon'], ['stars', 'Bajo las estrellas', 'moon-stars'], ['morning', 'Mañana', 'sparkle']],
+    name: 'Tu nombre', email: 'Correo', phone: 'Número de WhatsApp', opt: '(opcional)', notes: '¿Algo que debamos saber?',
+    notesPh: 'La ocasión, los colores que te gustan, alergias o la sorpresa que estás planeando',
+    send: 'Enviar mi solicitud', noPay: 'No pagas nada ahora. Primero confirmamos disponibilidad.',
+    ready: 'Tu solicitud está lista para enviar', readyCopy: 'Envíanosla y te respondemos con la disponibilidad para tu fecha.',
+    open: 'Abrir WhatsApp', copy: 'Copiar mensaje', edit: 'Editar solicitud',
+  },
+}[lang];
 ---
 <section class={`section section--sand${asPageTitle ? ' section--page-top' : ''}`} id={id} aria-labelledby={`${id}-title`}>
   <div class="container booking">
     <div class="booking__aside reveal">
       <div class="section-head" style="margin-bottom: 0;">
-        <Heading class={asPageTitle ? 'page-hero__title' : 'h2'} id={`${id}-title`}>Request your <Pill file="pill-golden.webp" /> date</Heading>
-        <p class="lead">Send us the date and the occasion. We reply on WhatsApp to confirm availability.</p>
+        <Heading class={asPageTitle ? 'page-hero__title' : 'h2'} id={`${id}-title`}>{T.title[0]} <Pill file="pill-golden.webp" /> {T.title[1]}</Heading>
+        <p class="lead">{T.lead}</p>
       </div>
       <ul class="next-steps">
-        <li><svg class="icon"><use href="#i-check"/></svg><span>We reply with availability for your date and beach.</span></li>
-        <li><svg class="icon"><use href="#i-check"/></svg><span>Choose colors, menu and extras like cake, photographer or marquee letters.</span></li>
-        <li><svg class="icon"><use href="#i-check"/></svg><span>Pay your deposit through a secure link and get the map pin of your spot.</span></li>
+        {T.steps.map((s) => <li><svg class="icon"><use href="#i-check"/></svg><span>{s}</span></li>)}
       </ul>
       <div class="contact-list">
-        <a href="#" data-wa hidden><svg class="icon"><use href="#i-whatsapp-logo"/></svg> Message us on WhatsApp</a>
+        <a href="#" data-wa hidden><svg class="icon"><use href="#i-whatsapp-logo"/></svg> {T.wa}</a>
         <a href={SITE.instagram} target="_blank" rel="noopener"><svg class="icon"><use href="#i-instagram-logo"/></svg> {SITE.handle}</a>
         <a href="#" data-email hidden><svg class="icon"><use href="#i-envelope-simple"/></svg> <span data-email-text></span></a>
       </div>
@@ -27,66 +53,64 @@ const Heading = asPageTitle ? 'h1' : 'h2';
       <form id="booking-form" novalidate>
         <div class="form-grid">
           <div class="field field--full">
-            <label for="f-experience">Experience</label>
+            <label for="f-experience">{T.experience}</label>
             <select class="input" id="f-experience" name="experience" required>
-              {EXPERIENCES.map((e) => <option value={e.booking} data-slug={e.slug}>{e.booking}</option>)}
+              {EXPERIENCES.map((e) => <option value={e.booking} data-slug={expSlug(lang, e)}>{e.booking}</option>)}
             </select>
           </div>
           <div class="field">
-            <label for="f-date">Date</label>
+            <label for="f-date">{T.date}</label>
             <input class="input" id="f-date" name="date" type="date" required aria-describedby="f-date-hint f-date-error">
             <p class="field__error" id="f-date-error" role="alert"></p>
           </div>
           <div class="field">
-            <label for="f-guests">Guests</label>
+            <label for="f-guests">{T.guests}</label>
             <select class="input" id="f-guests" name="guests" required>
-              {['2', '3', '4', '5', '6', '7', '8', '9', '10', '11 or more'].map((g) => <option>{g}</option>)}
+              {['2', '3', '4', '5', '6', '7', '8', '9', '10', T.more].map((g) => <option>{g}</option>)}
             </select>
           </div>
-          <p class="field__hint field--full" id="f-date-hint" aria-live="polite"><svg class="icon"><use href="#i-sun-horizon"/></svg> <span data-date-hint>Pick a date to see that day's sunset time in Aruba.</span></p>
+          <p class="field__hint field--full" id="f-date-hint" aria-live="polite"><svg class="icon"><use href="#i-sun-horizon"/></svg> <span data-date-hint>{T.hint}</span></p>
           <fieldset class="field field--full">
-            <legend>Time of day</legend>
+            <legend>{T.timeOfDay}</legend>
             <div class="chips">
-              <label class="chip"><input type="radio" name="time" value="Golden hour" checked><span><svg class="icon"><use href="#i-sun-horizon"/></svg> Golden hour</span></label>
-              <label class="chip"><input type="radio" name="time" value="Under the stars"><span><svg class="icon"><use href="#i-moon-stars"/></svg> Under the stars</span></label>
-              <label class="chip"><input type="radio" name="time" value="Morning"><span><svg class="icon"><use href="#i-sparkle"/></svg> Morning</span></label>
+              {T.times.map(([kind, label, icon], i) => <label class="chip"><input type="radio" name="time" value={label} data-kind={kind} checked={i === 0}><span><svg class="icon"><use href={`#i-${icon}`}/></svg> {label}</span></label>)}
             </div>
           </fieldset>
           <div class="field">
-            <label for="f-name">Your name</label>
+            <label for="f-name">{T.name}</label>
             <input class="input" id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error">
             <p class="field__error" id="f-name-error" role="alert"></p>
           </div>
           <div class="field">
-            <label for="f-email">Email</label>
+            <label for="f-email">{T.email}</label>
             <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="f-email-error">
             <p class="field__error" id="f-email-error" role="alert"></p>
           </div>
           <div class="field field--full">
-            <label for="f-phone">WhatsApp number <span class="opt">(optional)</span></label>
+            <label for="f-phone">{T.phone} <span class="opt">{T.opt}</span></label>
             <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+1 312 847 1928">
           </div>
           <div class="field field--full">
-            <label for="f-notes">Anything we should know? <span class="opt">(optional)</span></label>
-            <textarea class="input" id="f-notes" name="notes" rows="4" placeholder="The occasion, colors you love, allergies, or the surprise you are planning"></textarea>
+            <label for="f-notes">{T.notes} <span class="opt">{T.opt}</span></label>
+            <textarea class="input" id="f-notes" name="notes" rows="4" placeholder={T.notesPh}></textarea>
           </div>
         </div>
         <div class="form-foot">
-          <button class="btn btn--primary" type="submit"><svg class="icon"><use href="#i-whatsapp-logo"/></svg> Send my request</button>
-          <p>No payment now. We confirm availability first.</p>
+          <button class="btn btn--primary" type="submit"><svg class="icon"><use href="#i-whatsapp-logo"/></svg> {T.send}</button>
+          <p>{T.noPay}</p>
         </div>
         <p class="form-status" id="form-status" role="alert" hidden></p>
       </form>
 
       <div class="success" id="booking-success" hidden tabindex="-1">
         <span class="success__badge" aria-hidden="true"><svg class="icon"><use href="#i-l-check"/></svg></span>
-        <h3>Your request is ready to send</h3>
-        <p data-success-copy>Send it to us and we will reply with availability for your date.</p>
+        <h3>{T.ready}</h3>
+        <p data-success-copy>{T.readyCopy}</p>
         <dl class="summary" id="booking-summary"></dl>
         <div class="success__actions">
-          <a class="btn btn--primary" id="send-link" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp-logo" data-send-icon/></svg> <span data-send-label>Open WhatsApp</span></a>
-          <button class="btn btn--ghost" type="button" id="copy-message"><svg class="icon"><use href="#i-copy"/></svg> <span>Copy message</span></button>
-          <button class="btn btn--ghost" type="button" id="edit-request">Edit request</button>
+          <a class="btn btn--primary" id="send-link" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp-logo" data-send-icon/></svg> <span data-send-label>{T.open}</span></a>
+          <button class="btn btn--ghost" type="button" id="copy-message"><svg class="icon"><use href="#i-copy"/></svg> <span>{T.copy}</span></button>
+          <button class="btn btn--ghost" type="button" id="edit-request">{T.edit}</button>
         </div>
       </div>
     </div>

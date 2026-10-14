@@ -1,11 +1,10 @@
 ---
 import { img } from '../data/site.js';
-const { heading = 'The details guests mention in their reviews' } = Astro.props;
-const items = [
-  { file: 'touch-photos', caption: 'Printed photos of the two of you', alt: 'Printed couple photos hanging from a line between two bamboo poles above a red heart rug on the sand' },
-  { file: 'touch-note', caption: 'Your note, copied onto a card', alt: 'A framed you and me always card beside red roses and a candle on a turquoise table runner' },
-  { file: 'touch-flowers', caption: 'Fresh flowers on the table', alt: 'Pink and purple flowers in a glass vase next to a framed wine quote on a wooden picnic table' },
-];
+import { t } from '../i18n.js';
+const { lang = 'en' } = Astro.props;
+const ui = t(lang);
+const { heading = ui.touchesHeading } = Astro.props;
+const items = ['touch-photos', 'touch-note', 'touch-flowers'].map((file, i) => ({ file, caption: ui.touches[i], alt: ui.touchesAlt[i] }));
 ---
 <section class="section section--lagoon" aria-labelledby="touch-title">
   <div class="container split split--flip">
@@ -19,10 +18,10 @@ const items = [
     </div>
     <div class="quote-block reveal">
       <h2 class="h2" id="touch-title">{heading}</h2>
-      <blockquote>
+      <blockquote lang="en">
         <p>&ldquo;She printed off photos of my partner and I, had me write a little note and copied it into a cute card. The lights, the location of the beach. Just amazing, all of it.&rdquo;</p>
       </blockquote>
-      <div class="person"><div class="person__text"><strong>Taylor T.</strong><span>Sunset picnic for a 10 year anniversary</span></div></div>
+      <div class="person"><div class="person__text"><strong>Taylor T.</strong><span>{ui.touchesWho}</span></div></div>
     </div>
   </div>
 </section>

@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import BookingSection from '../components/BookingSection.astro';
+import Faq from '../components/Faq.astro';
+import { t, route, routePair } from '../i18n.js';
+import { breadcrumbSchema, faqSchema } from '../data/schema.js';
+
+const { lang = 'en' } = Astro.props;
+const ui = t(lang);
+const C = {
+  en: {
+    crumb: 'Book', title: 'Book a beach picnic in Aruba | One Happy Picnic', faq: 'Before you book',
+    description: 'Request a date for your private beach picnic in Aruba. Pick the experience, the date and your guests, and we confirm availability on WhatsApp.',
+  },
+  es: {
+    crumb: 'Reservar', title: 'Reserva un picnic en la playa en Aruba | One Happy Picnic', faq: 'Antes de reservar',
+    description: 'Pide una fecha para tu picnic privado en la playa en Aruba. Elige la experiencia, la fecha y las personas, y confirmamos disponibilidad por WhatsApp.',
+  },
+}[lang];
+const crumbs = [{ href: route(lang, 'home'), label: ui.home }, { href: route(lang, 'book'), label: C.crumb }];
+const faqKeys = ['deposit', 'cancellation', 'advance', 'price', 'weather'];
+---
+<Base lang={lang} alt={routePair('book')} title={C.title} description={C.description} jsonld={[breadcrumbSchema(crumbs), faqSchema(faqKeys, lang)]}>
+  <BookingSection id="book" asPageTitle lang={lang} />
+  <Faq keys={faqKeys} heading={C.faq} lang={lang} />
+</Base>

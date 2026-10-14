@@ -1,0 +1,110 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Faq from '../components/Faq.astro';
+import { SITE } from '../data/site.js';
+import { t, route, routePair } from '../i18n.js';
+import { business, breadcrumbSchema } from '../data/schema.js';
+
+const { lang = 'en' } = Astro.props;
+const ui = t(lang);
+const C = {
+  en: {
+    title: 'Contact One Happy Picnic Aruba', h1: 'Contact One Happy Picnic',
+    description: 'Message One Happy Picnic Aruba for picnic dates, prices, proposal setups and charcuterie board orders. We reply on WhatsApp and Instagram.',
+    intro: 'Message us for dates, prices and custom setups. To request a date, the booking form is the fastest way.',
+    messageUs: 'Message us', anyTime: 'Message us any time', call: 'Call', email: 'Email', where: 'Where we set up', other: 'Other beaches on request',
+    intro2: 'Hi One Happy Picnic, I have a question.',
+    name: ['Your name', 'Name'], mail: ['Email', 'Email'], topic: ['Topic', 'Topic'],
+    topics: ['A question about a picnic', 'A proposal or custom setup', 'A charcuterie board order', 'Something else'],
+    message: ['Message', 'Message'], placeholder: 'Your dates, group size or question',
+    send: 'Send my message', reply: 'We reply on WhatsApp or Instagram.',
+    ready: 'Your message is ready to send', readyCopy: 'Send it to us and we will reply.',
+    open: 'Open WhatsApp', copy: 'Copy message', edit: 'Edit message', quick: 'Quick answers',
+  },
+  es: {
+    title: 'Contacto | One Happy Picnic Aruba', h1: 'Contacta a One Happy Picnic',
+    description: 'Escríbele a One Happy Picnic Aruba para fechas, precios, propuestas de matrimonio y pedidos de tablas de charcutería. Respondemos por WhatsApp e Instagram.',
+    intro: 'Escríbenos para fechas, precios y montajes a medida. Para pedir una fecha, el formulario de reserva es lo más rápido.',
+    messageUs: 'Escríbenos', anyTime: 'Escríbenos cuando quieras', call: 'Llamar', email: 'Correo', where: 'Dónde montamos', other: 'Otras playas si nos lo pides',
+    intro2: 'Hola One Happy Picnic, tengo una pregunta.',
+    name: ['Tu nombre', 'Nombre'], mail: ['Correo', 'Correo'], topic: ['Tema', 'Tema'],
+    topics: ['Una pregunta sobre un picnic', 'Una propuesta o un montaje a medida', 'Un pedido de tabla de charcutería', 'Otra cosa'],
+    message: ['Mensaje', 'Mensaje'], placeholder: 'Tus fechas, cuántas personas o tu pregunta',
+    send: 'Enviar mi mensaje', reply: 'Respondemos por WhatsApp o Instagram.',
+    ready: 'Tu mensaje está listo para enviar', readyCopy: 'Envíanoslo y te respondemos.',
+    open: 'Abrir WhatsApp', copy: 'Copiar mensaje', edit: 'Editar mensaje', quick: 'Respuestas rápidas',
+  },
+}[lang];
+const crumbs = [{ href: route(lang, 'home'), label: ui.home }, { href: route(lang, 'contact'), label: ui.contact }];
+const contactPage = { '@context': 'https://schema.org', '@type': 'ContactPage', name: C.title, inLanguage: lang, url: `${SITE.url}${route(lang, 'contact')}`, about: { '@id': `${SITE.url}/#business` } };
+const maps = (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+---
+<Base lang={lang} alt={routePair('contact')} title={C.title} description={C.description} jsonld={[contactPage, business, breadcrumbSchema(crumbs)]}>
+  <PageHero lang={lang} crumbs={crumbs} title={C.h1} intro={C.intro} cta={{ href: route(lang, 'book'), label: ui.book }} />
+
+  <section class="section section--sand section--tight">
+    <div class="container booking">
+      <div class="booking__aside reveal">
+        <h2 class="h3">{C.messageUs}</h2>
+        <ul class="channels">
+          <li><a href={SITE.instagramDm} target="_blank" rel="noopener"><svg class="feature-icon" aria-hidden="true"><use href="#i-l-instagram-logo"/></svg><span><strong>Instagram</strong><span>{SITE.handle}</span></span></a></li>
+          <li data-wa-item hidden><a href="#" data-wa><svg class="feature-icon" aria-hidden="true"><use href="#i-l-whatsapp-logo"/></svg><span><strong>WhatsApp</strong><span>{C.anyTime}</span></span></a></li>
+          <li data-phone-item hidden><a href="#" data-call><svg class="feature-icon" aria-hidden="true"><use href="#i-l-phone"/></svg><span><strong>{C.call}</strong><span data-phone-text></span></span></a></li>
+          <li data-email-item hidden><a href="#" data-email><svg class="feature-icon" aria-hidden="true"><use href="#i-l-envelope-simple"/></svg><span><strong>{C.email}</strong><span data-email-text></span></span></a></li>
+        </ul>
+        <h2 class="h3 channels__title">{C.where}</h2>
+        <ul class="beaches">
+          <li><a href={maps('Eagle Beach, Aruba')} target="_blank" rel="noopener">Eagle Beach <svg class="icon icon-sm"><use href="#i-arrow-up-right"/></svg></a></li>
+          <li><a href={maps('Surfside Beach, Aruba')} target="_blank" rel="noopener">Surfside Beach <svg class="icon icon-sm"><use href="#i-arrow-up-right"/></svg></a></li>
+          <li>{C.other}</li>
+        </ul>
+      </div>
+
+      <div class="form-card reveal reveal-d1">
+        <form class="compose" data-compose data-intro={C.intro2} data-subject="message" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="c-name">{C.name[0]}</label>
+              <input class="input" id="c-name" name="name" type="text" autocomplete="name" required data-label={C.name[1]} aria-describedby="c-name-error">
+              <p class="field__error" id="c-name-error" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="c-email">{C.mail[0]}</label>
+              <input class="input" id="c-email" name="email" type="email" autocomplete="email" inputmode="email" required data-label={C.mail[1]} aria-describedby="c-email-error">
+              <p class="field__error" id="c-email-error" role="alert"></p>
+            </div>
+            <div class="field field--full">
+              <label for="c-topic">{C.topic[0]}</label>
+              <select class="input" id="c-topic" name="topic" data-label={C.topic[1]}>
+                {C.topics.map((o) => <option>{o}</option>)}
+              </select>
+            </div>
+            <div class="field field--full">
+              <label for="c-message">{C.message[0]}</label>
+              <textarea class="input" id="c-message" name="message" rows="5" required data-label={C.message[1]} aria-describedby="c-message-error" placeholder={C.placeholder}></textarea>
+              <p class="field__error" id="c-message-error" role="alert"></p>
+            </div>
+          </div>
+          <div class="form-foot">
+            <button class="btn btn--primary" type="submit"><svg class="icon"><use href="#i-whatsapp-logo"/></svg> {C.send}</button>
+            <p>{C.reply}</p>
+          </div>
+          <p class="form-status" role="alert" hidden></p>
+        </form>
+        <div class="success" data-compose-success hidden tabindex="-1">
+          <span class="success__badge" aria-hidden="true"><svg class="icon"><use href="#i-l-check"/></svg></span>
+          <h3>{C.ready}</h3>
+          <p data-success-copy>{C.readyCopy}</p>
+          <div class="success__actions">
+            <a class="btn btn--primary" data-send-link href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp-logo" data-send-icon/></svg> <span data-send-label>{C.open}</span></a>
+            <button class="btn btn--ghost" type="button" data-copy><svg class="icon"><use href="#i-copy"/></svg> <span>{C.copy}</span></button>
+            <button class="btn btn--ghost" type="button" data-edit>{C.edit}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Faq keys={['price', 'advance', 'beaches', 'delivery']} heading={C.quick} lang={lang} />
+</Base>

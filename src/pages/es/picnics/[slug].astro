@@ -1,0 +1,9 @@
+---
+import View from '../../../views/Picnic.astro';
+import { EXPERIENCES } from '../../../data/site.es.js';
+
+export function getStaticPaths() {
+  return EXPERIENCES.map((e) => ({ params: { slug: e.slugEs }, props: { e } }));
+}
+---
+<View e={Astro.props.e} lang="es" />

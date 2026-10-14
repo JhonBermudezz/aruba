@@ -1,0 +1,9 @@
+---
+import View from '../../views/Post.astro';
+import { getPosts } from '../../blog.js';
+
+export function getStaticPaths() {
+  return getPosts('en').map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+---
+<View post={Astro.props.post} lang="en" />

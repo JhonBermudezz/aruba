@@ -6,7 +6,7 @@
 | **Proveedor** | JhonDev |
 | **Plan contratado** | Plan 2, Recomendado: **USD 500**, pago único |
 | **Entrega** | 4 semanas (hasta 8 si el contenido se demora) |
-| **Estado** | Sitio en inglés con 16 páginas, ya migrado a Astro. Faltan el español, el blog, el calendario y el pago |
+| **Estado** | Sitio bilingüe (inglés y español) con 35 páginas en Astro, selector de idioma y blog con su primer artículo. Faltan 3 blogs, el calendario y el pago |
 | **Actualizado** | 14 de octubre de 2026 |
 
 ---
@@ -14,7 +14,7 @@
 ## 1. Resumen
 
 - **Ya construido:** la página de inicio en inglés (diseño v2 con los ajustes pedidos), privacidad, términos y 404, y la vista previa privada.
-- **Lo que falta del Plan 2:** versión en español, páginas de Paquetes, Sobre nosotros, Contacto y Blog, los 4 blogs SEO, el agendamiento con Google Calendar y el link de pago por reserva.
+- **Lo que falta del Plan 2:** 3 de los 4 blogs SEO, el panel para que Zoe publique, el agendamiento con Google Calendar y el link de pago por reserva.
 - **Hallazgo importante:** Google Calendar puede cobrar al reservar, pero solo con **Stripe**, y **Stripe no acepta negocios con sede en Aruba**. Por eso el cobro va con un link aparte, que es justo lo que promete el PDF ("link de pago dinámico"). Detalle en la sección 4.
 - **Decisiones que necesitamos de Zoe:** en qué banco tiene la cuenta (para elegir pasarela), su cuenta de Google para el calendario, el porcentaje del abono y los precios (sección 9).
 
@@ -29,9 +29,9 @@
 | Botón de llamada rápida | En la misma barra fija, junto a WhatsApp | ✅ Hecho (aparece al poner el número) |
 | Identidad visual aplicada | Colores del logo, tipografía Manrope y fotos reales | ✅ Hecho |
 | Páginas: Inicio, Paquetes/Servicios, Sobre nosotros, Contacto | Inicio, índice de picnics, **una página por tipo de picnic (6)**, Sobre nosotros, Reseñas (con formulario), FAQ, Contacto y Reservar | ✅ Hecho (inglés) |
-| Sección de blog lista para publicar | Blog con listado, artículo y panel para que Zoe publique sin código | ⏳ Semana 2 y 3 |
-| Carga inicial de 4 blogs SEO (E-E-A-T) | Los escribimos en inglés y español (sección 7) | ⏳ Semana 3 |
-| Sitio multidioma: inglés + español | Rutas separadas `/` y `/es/`, con selector de idioma y `hreflang` para Google | ⏳ Semana 2 y 3 |
+| Sección de blog lista para publicar | Blog con listado y plantilla de artículo en inglés y español ✅. Falta el panel para que Zoe publique sin código | ✅ / ⏳ panel |
+| Carga inicial de 4 blogs SEO (E-E-A-T) | Los escribimos en inglés y español (sección 7). 1 de 4 publicado | ⏳ 1/4 |
+| Sitio multidioma: inglés + español | Rutas separadas `/` y `/es/`, con selector de idioma y `hreflang` para Google | ✅ |
 | Agendamiento por enlace de Google Calendar | Página de reservas de Google Calendar embebida en la web (sección 3) | ⏳ Semana 3, necesita la cuenta de Zoe |
 | Link de pago dinámico por reserva | La web calcula el abono y genera el link de pago (sección 4) | ⏳ Semana 3, necesita la pasarela |
 
@@ -113,7 +113,7 @@ La sección "How it works" de la página ya cuenta este flujo, con los horarios 
 | `/` | `/es/` | Inicio (la landing) | ✅ |
 | `/picnics/` | `/es/picnics/` | Índice con las 6 experiencias | ✅ |
 | `/picnics/sunset-picnic/` | `/es/picnics/picnic-al-atardecer/` | Sunset picnic | ✅ |
-| `/picnics/moonlight-picnic/` | `/es/picnics/picnic-a-la-luz-de-la-luna/` | Moonlight picnic | ✅ |
+| `/picnics/moonlight-picnic/` | `/es/picnics/picnic-nocturno/` | Moonlight picnic | ✅ |
 | `/picnics/proposal-setup/` | `/es/picnics/propuesta-de-matrimonio/` | Propuestas | ✅ |
 | `/picnics/birthday-anniversary-picnic/` | `/es/picnics/cumpleanos-y-aniversarios/` | Cumpleaños y aniversarios | ✅ |
 | `/picnics/group-bachelorette-picnic/` | `/es/picnics/grupos-y-despedidas/` | Grupos y despedidas | ✅ |
@@ -123,12 +123,12 @@ La sección "How it works" de la página ya cuenta este flujo, con los horarios 
 | `/faq/` | `/es/preguntas/` | 24 preguntas en 6 grupos | ✅ |
 | `/contact/` | `/es/contacto/` | Canales, formulario, playas con mapa | ✅ |
 | `/book/` | `/es/reservar/` | Formulario de reserva (luego Google Calendar + abono) | ✅ / ⏳ calendario |
-| `/blog/` y `/blog/[artículo]/` | `/es/blog/...` | Blog | ⏳ |
+| `/blog/` y `/blog/[artículo]/` | `/es/blog/` y `/es/blog/[artículo]/` | Listado y artículos (Markdown) | ✅ |
 | `/privacy/`, `/terms/` | `/es/privacidad/`, `/es/terminos/` | Legales | ✅ |
 
 **Cómo está hecho cada página de picnic (SEO):** título y descripción propios con la palabra clave ("Proposal setup in Aruba with MARRY ME letters"), H1 único, migas de pan, datos estructurados `Service` + `BreadcrumbList` + `FAQPage`, fotos reales de esa categoría, reseñas, preguntas propias y enlaces a las otras 5 (enlazado interno). El botón "Book this picnic" llega al formulario con la experiencia ya elegida.
 
-**Todo el contenido vive en `src/data/site.js`:** experiencias, reseñas, preguntas, fotos y líneas de tiempo. Para la versión en español se traduce ese archivo.
+**El contenido vive en `src/data/site.js` (inglés) y `src/data/site.es.js` (español):** experiencias, reseñas, preguntas, fotos y líneas de tiempo. Las rutas de cada idioma y los textos de la interfaz están en `src/i18n.js`. Las reseñas de los invitados se dejan en inglés, tal como las escribieron.
 
 > **Pendiente:** el panel para que Zoe publique el blog (Decap CMS o Keystatic) se agrega junto con el blog.
 
@@ -138,7 +138,7 @@ La sección "How it works" de la página ya cuenta este flujo, con los horarios 
 
 | Pilar E-E-A-T | Título en inglés | Título en español | Palabra clave | Qué lleva |
 |---|---|---|---|---|
-| Experiencia | How we set up a sunset picnic on Eagle Beach | Cómo armamos un picnic al atardecer en Eagle Beach | sunset picnic Eagle Beach | El montaje paso a paso con fotos reales y los tiempos según el atardecer |
+| Experiencia ✅ publicado | How to plan a sunset picnic on Eagle Beach | Cómo planear un picnic al atardecer en Eagle Beach | sunset picnic Eagle Beach | El montaje paso a paso con fotos reales y los tiempos según el atardecer |
 | Conocimiento | The best time and beach in Aruba for a picnic | Guía: la mejor hora y playa en Aruba para tu picnic | best beach for a picnic in Aruba | Tabla de atardeceres por mes, viento, playas (Eagle, Surfside, Palm) y consejos |
 | Autoridad | What couples say after a picnic with us | Lo que dicen las parejas que ya reservaron con nosotros | beach picnic Aruba reviews | Las 4 reseñas reales con su historia (luna de miel, aniversario) y sus fotos |
 | Confianza | What each package includes and how to book without surprises | Qué incluye cada paquete y cómo reservar sin sorpresas | Aruba picnic packages prices | Paquetes, precios, abono, cancelación, clima y pasos para reservar |

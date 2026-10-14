@@ -1,12 +1,16 @@
 ---
-import { INCLUDED, img } from '../data/site.js';
+import { img } from '../data/site.js';
+import { getData, t } from '../i18n.js';
+const { lang = 'en' } = Astro.props;
+const ui = t(lang);
+const { INCLUDED } = getData(lang);
 const {
   id = 'included',
-  heading = 'Everything is ready before you arrive',
-  lead = 'Each picnic includes everything below. Extras like a photographer or a cake cost more.',
+  heading = ui.includedHeading,
+  lead = ui.includedLead,
   items = INCLUDED,
   extras = [],
-  photo = { file: 'included', alt: 'A picnic table at sunset set with gold chargers, pink napkins, flowers and a glowing lantern under a blue flower teepee', caption: 'Table for two', note: 'at golden hour.' },
+  photo = ui.includedPhoto,
 } = Astro.props;
 const delay = (i) => (i % 2 ? ' reveal-d1' : '');
 ---
@@ -28,7 +32,7 @@ const delay = (i) => (i % 2 ? ' reveal-d1' : '');
       </ul>
       {extras.length > 0 && (
         <div class="extras reveal">
-          <h3>Add to your picnic</h3>
+          <h3>{ui.addTo}</h3>
           <p>{extras.join(' · ')}</p>
         </div>
       )}

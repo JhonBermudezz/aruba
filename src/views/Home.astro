@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import ExperienceCards from '../components/ExperienceCards.astro';
+import Included from '../components/Included.astro';
+import Touches from '../components/Touches.astro';
+import Timeline from '../components/Timeline.astro';
+import Reviews from '../components/Reviews.astro';
+import Polaroids from '../components/Polaroids.astro';
+import BookingSection from '../components/BookingSection.astro';
+import Faq from '../components/Faq.astro';
+import FinalCta from '../components/FinalCta.astro';
+import Pill from '../components/Pill.astro';
+import Stars from '../components/Stars.astro';
+import { getData, route, routePair } from '../i18n.js';
+import { business, faqSchema } from '../data/schema.js';
+
+const { lang = 'en' } = Astro.props;
+const { EXPERIENCES, TIMELINES } = getData(lang);
+const faqKeys = ['length', 'beaches', 'price', 'food', 'deposit', 'cancellation', 'weather', 'advance'];
+const gallery = ['g-golden-table', 'g-kiss', 'g-torches', 'g-long-table', 'g-teepee-sun', 'g-family', 'g-silhouettes', 'g-birthday-23', 'g-table-spread'];
+const C = {
+  en: {
+    title: 'One Happy Picnic Aruba | Private sunset picnics on the beach',
+    description: 'Private beach picnics in Aruba, styled before you arrive. Sunset and moonlight picnics, proposals, birthdays and charcuterie boards on Eagle Beach and Surfside.',
+    heroAlt: 'A bamboo teepee wrapped in pink flowers over a low wooden picnic table, white cushions and a turquoise blanket on the sand at sunset in Aruba',
+    h1: ['Sunset picnics on the sand,', 'styled before you arrive'],
+    sub: 'Zoe and her team set up your private picnic on Eagle Beach or Surfside, flowers and grazing board included. You arrive at golden hour and we clean up after you leave.',
+    sunsetToday: 'Sunset today',
+    proof: 'Susan R. sent a sunset picnic to her daughter\'s honeymoon.',
+    trustLabel: 'What every picnic includes',
+    trust: ['We set up and clean up', 'Beach permit included', 'Food and drinks included', '24 hour free cancellation'],
+    exp: ['Pick your', 'moment'], expLead: 'Every picnic is private. Tell us the occasion and we style the table for it.', all: 'All picnics',
+    promiseLabel: 'Our promise',
+    promise: ['We set your table on the sand before you leave the hotel. You sit down and', 'watch the sun drop into the Caribbean.'],
+  },
+  es: {
+    title: 'One Happy Picnic Aruba | Picnics privados al atardecer en la playa',
+    description: 'Picnics privados en la playa en Aruba, montados antes de que llegues. Picnics al atardecer y de noche, propuestas, cumpleaños y tablas de charcutería en Eagle Beach y Surfside.',
+    heroAlt: 'Tipi de bambú con flores rosadas sobre una mesa baja de madera, cojines blancos y una manta turquesa en la arena al atardecer en Aruba',
+    h1: ['Tu picnic en la arena,', 'listo antes de que llegues'],
+    sub: 'Zoe y su equipo montan tu picnic privado en Eagle Beach o Surfside, con flores y tabla de picoteo incluidas. Llegas en la hora dorada y recogemos todo cuando te vas.',
+    sunsetToday: 'Atardecer hoy',
+    proof: 'Susan R. le regaló un picnic al atardecer a su hija en su luna de miel.',
+    trustLabel: 'Lo que incluye cada picnic',
+    trust: ['Montamos y recogemos', 'Permiso de playa incluido', 'Comida y bebidas incluidas', 'Cancelación gratis hasta 24 horas antes'],
+    exp: ['Elige tu', 'momento'], expLead: 'Cada picnic es privado. Cuéntanos la ocasión y decoramos la mesa para ella.', all: 'Todos los picnics',
+    promiseLabel: 'Nuestra promesa',
+    promise: ['Ponemos tu mesa en la arena antes de que salgas del hotel. Te sientas y', 've cómo el sol cae en el Caribe.'],
+  },
+}[lang];
+const icons = ['broom', 'certificate', 'fork-knife', 'shield-check'];
+---
+<Base
+  lang={lang}
+  alt={routePair('home')}
+  title={C.title}
+  description={C.description}
+  jsonld={[business, faqSchema(faqKeys, lang)]}
+  preload={[{ href: '/assets/img/hero-wide-1920.webp', media: '(min-width: 768px)' }, { href: '/assets/img/hero-tall-1080.webp', media: '(max-width: 767px)' }]}
+>
+  <header class="hero" id="top">
+    <div class="hero__media">
+      <picture>
+        <source media="(max-width: 767px)" srcset="/assets/img/hero-tall-720.webp 720w, /assets/img/hero-tall-1080.webp 1080w" sizes="100vw">
+        <source media="(min-width: 768px)" srcset="/assets/img/hero-wide-1280.webp 1280w, /assets/img/hero-wide-1920.webp 1920w, /assets/img/hero-wide-2560.webp 2560w" sizes="100vw">
+        <img src="/assets/img/hero-wide-1920.webp" width="1920" height="1072" fetchpriority="high" alt={C.heroAlt}>
+      </picture>
+    </div>
+    <div class="hero__inner container">
+      <div class="hero__panel">
+        <h1 class="hero__title">
+          <span class="line">{C.h1[0]}</span>
+          <span class="line">{C.h1[1]}</span>
+        </h1>
+        <p class="hero__sub">{C.sub}</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#book">{lang === 'es' ? 'Reserva tu picnic' : 'Book your picnic'} <svg class="icon icon-move"><use href="#i-arrow-right"/></svg></a>
+          <span class="sunset-chip"><svg class="icon"><use href="#i-sun-horizon"/></svg> <span data-sunset-label>{C.sunsetToday}</span> <strong class="mono" data-sunset-today>6:22 PM</strong></span>
+        </div>
+        <div class="hero__proof">
+          <Stars />
+          <p><q lang="en">My daughter and her husband rated it 10 out of 10.</q> {C.proof}</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="trust" aria-label={C.trustLabel}>
+    <div class="container">
+      <ul>
+        {C.trust.map((label, i) => (
+          <li class={`reveal${['', ' reveal-d1', ' reveal-d2', ' reveal-d3'][i]}`}><svg class="feature-icon" aria-hidden="true"><use href={`#i-l-${icons[i]}`}/></svg><div class="trust__text"><strong>{label}</strong></div></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="experiences" aria-labelledby="exp-title">
+    <div class="container">
+      <div class="gallery-head">
+        <div class="section-head reveal">
+          <h2 class="h2" id="exp-title">{C.exp[0]} <Pill file="pill-sunset.webp" /> {C.exp[1]}</h2>
+          <p class="lead">{C.expLead}</p>
+        </div>
+        <a class="btn btn--ghost reveal" href={route(lang, 'picnics')}>{C.all} <svg class="icon icon-move"><use href="#i-arrow-right"/></svg></a>
+      </div>
+      <ExperienceCards items={EXPERIENCES} lang={lang} />
+    </div>
+  </section>
+
+  <section class="tagline section--sand" aria-label={C.promiseLabel}>
+    <div class="container">
+      <div class="tagline__inner">
+        <p class="tagline__text" data-reveal-words>{C.promise[0]} <span data-accent>{C.promise[1]}</span></p>
+      </div>
+    </div>
+  </section>
+
+  <Included lang={lang} />
+  <Touches lang={lang} />
+  <Timeline data={TIMELINES.picnic} lang={lang} />
+  <Reviews lang={lang} />
+  <Polaroids keys={gallery} lang={lang} />
+  <BookingSection lang={lang} />
+  <Faq keys={faqKeys} lang={lang} />
+  <FinalCta href="#book" lang={lang} />
+</Base>

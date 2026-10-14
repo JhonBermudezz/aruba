@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { SITE, img } from '../data/site.js';
+import { t, route } from '../i18n.js';
+import { postHref, postPair, formatDate } from '../blog.js';
+import { breadcrumbSchema, articleSchema } from '../data/schema.js';
+
+const { post, lang = 'en' } = Astro.props;
+const ui = t(lang);
+const href = postHref(lang, post.slug);
+const { Content } = post;
+const C = {
+  en: {
+    min: (n) => `${n} min read`, by: 'Written by', author: 'Zoe, One Happy Picnic Aruba',
+    bio: 'Zoe started One Happy Picnic with charcuterie boards. She and her team now set up private picnics on Eagle Beach and Surfside.',
+    more: 'Questions about your date? Message us on Instagram or WhatsApp.', contact: 'Contact us', back: 'All articles',
+  },
+  es: {
+    min: (n) => `${n} min de lectura`, by: 'Escrito por', author: 'Zoe, One Happy Picnic Aruba',
+    bio: 'Zoe empezó One Happy Picnic con tablas de charcutería. Hoy ella y su equipo montan picnics privados en Eagle Beach y Surfside.',
+    more: '¿Preguntas sobre tu fecha? Escríbenos por Instagram o WhatsApp.', contact: 'Contáctanos', back: 'Todos los artículos',
+  },
+}[lang];
+const crumbs = [{ href: route(lang, 'home'), label: ui.home }, { href: route(lang, 'blog'), label: ui.blog }, { href, label: post.title }];
+---
+<Base
+  lang={lang}
+  alt={postPair(post)}
+  title={`${post.title} | One Happy Picnic Aruba`}
+  description={post.description}
+  image={`/assets/img/${post.image}-1000.webp`}
+  imageAlt={post.imageAlt}
+  ogType="article"
+  jsonld={[articleSchema(post, `${SITE.url}${href}`, lang), breadcrumbSchema(crumbs)]}
+>
+  <article class="article">
+    <header class="container article__head">
+      <nav class="crumbs" aria-label={ui.breadcrumb}>
+        <ol>
+          {crumbs.map((c, i) => <li>{i < crumbs.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}
+        </ol>
+      </nav>
+      <p class="post-meta"><span>{post.category}</span><span><time datetime={String(post.date).slice(0, 10)}>{formatDate(lang, post.date)}</time></span><span>{C.min(post.readMinutes)}</span></p>
+      <h1 class="page-hero__title">{post.title}</h1>
+      <p class="page-hero__intro">{post.description}</p>
+    </header>
+    <figure class="container article__hero">
+      <img src={img(`${post.image}-1000.webp`)} srcset={`${img(`${post.image}-640.webp`)} 640w, ${img(`${post.image}-1000.webp`)} 1000w`} sizes="(min-width: 1024px) 960px, 100vw" width="1000" height="1250" fetchpriority="high" alt={post.imageAlt}>
+    </figure>
+    <div class="container">
+      <div class="prose">
+        <Content />
+      </div>
+      <aside class="author" aria-label={C.by}>
+        <img src="/assets/img/logo-192.webp" width="56" height="56" alt="" loading="lazy">
+        <div>
+          <p class="author__by">{C.by}</p>
+          <p class="author__name">{C.author}</p>
+          <p>{C.bio}</p>
+        </div>
+      </aside>
+      <div class="article__foot">
+        <p>{C.more}</p>
+        <div class="hero__actions">
+          <a class="btn btn--ghost" href={route(lang, 'contact')}>{C.contact}</a>
+          <a class="text-link" href={route(lang, 'blog')}>{C.back} <svg class="icon"><use href="#i-arrow-right"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </article>
+  <FinalCta lang={lang} />
+</Base>

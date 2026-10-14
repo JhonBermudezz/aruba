@@ -1,6 +1,8 @@
 ---
 import { img } from '../data/site.js';
-const { items } = Astro.props;
+import { t, expHref } from '../i18n.js';
+const { items, lang = 'en' } = Astro.props;
+const ui = t(lang);
 const delay = (i) => ['', ' reveal-d1', ' reveal-d2'][i % 3];
 ---
 <div class="exp-grid">
@@ -11,7 +13,7 @@ const delay = (i) => ['', ' reveal-d1', ' reveal-d2'][i % 3];
              sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 84vw" width="960" height="720" loading="lazy" alt={e.card.alt}>
       </div>
       <div class="exp-card__body">
-        <h3><a class="exp-card__link" href={`/picnics/${e.slug}/`}>{e.name}</a></h3>
+        <h3><a class="exp-card__link" href={expHref(lang, e)}>{e.name}</a></h3>
         <p>{e.card.text}</p>
         <p class="exp-card__meta">{e.card.meta}</p>
         <div class="exp-card__foot"><span class="text-link" aria-hidden="true">{e.card.cta} <svg class="icon"><use href="#i-arrow-right"/></svg></span></div>
@@ -19,4 +21,4 @@ const delay = (i) => ['', ' reveal-d1', ' reveal-d2'][i % 3];
     </article>
   ))}
 </div>
-<p class="scroll-hint" aria-hidden="true"><svg class="icon icon-sm"><use href="#i-arrow-right"/></svg> Swipe to see all {items.length}</p>
+<p class="scroll-hint" aria-hidden="true"><svg class="icon icon-sm"><use href="#i-arrow-right"/></svg> {ui.swipe(items.length)}</p>

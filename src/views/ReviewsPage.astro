@@ -1,0 +1,124 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Reviews from '../components/Reviews.astro';
+import Polaroids from '../components/Polaroids.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { getData, t, route, routePair } from '../i18n.js';
+import { breadcrumbSchema } from '../data/schema.js';
+
+const { lang = 'en' } = Astro.props;
+const ui = t(lang);
+const { EXPERIENCES } = getData(lang);
+const C = {
+  en: {
+    title: 'Reviews of our beach picnics in Aruba | One Happy Picnic',
+    description: 'Read what guests wrote after their picnics with One Happy Picnic Aruba, from a honeymoon surprise to a 10 year anniversary. Share your own review.',
+    h1: 'Reviews from our guests',
+    intro: 'Guests posted these reviews on our Facebook page after their picnics. Had a picnic with us? Add yours below.',
+    cta: 'Leave a review', alt: 'A couple kissing on patterned cushions beside a flower teepee at sunset',
+    all: ['Four', 'reviews, in full'], gallery: ['Their', 'picnics'],
+    leave: 'Had a picnic with us?', leaveLead: 'Tell Zoe how it went. With your permission, we add your review to this page.',
+    intro2: 'Hi Zoe, here is my review of our picnic.',
+    name: ['Your name', 'Name'], picnic: ['Your picnic', 'Picnic'], rating: ['Your rating', 'Rating'], outOf: (n) => `${n} out of 5`,
+    review: ['Your review', 'Review'], placeholder: 'The occasion, the setup, the food, the moment you remember',
+    publish: ['Yes, you can publish it with my first name and last initial', 'Publish on the website', 'You can publish my review with my first name and last initial.'],
+    send: 'Send my review', thanks: 'Thank you for taking the time.',
+    ready: 'Your review is ready to send', readyCopy: 'Send it to Zoe on WhatsApp or Instagram.',
+    open: 'Open WhatsApp', copy: 'Copy review', edit: 'Edit review',
+  },
+  es: {
+    title: 'Reseñas de nuestros picnics en la playa en Aruba | One Happy Picnic',
+    description: 'Lee lo que escribieron los invitados después de su picnic con One Happy Picnic Aruba, desde una sorpresa de luna de miel hasta un aniversario de 10 años. Deja tu reseña.',
+    h1: 'Reseñas de nuestros invitados',
+    intro: 'Los invitados publicaron estas reseñas en nuestra página de Facebook después de su picnic. Las dejamos en inglés, tal como las escribieron. ¿Tuviste un picnic con nosotros? Agrega la tuya abajo.',
+    cta: 'Dejar una reseña', alt: 'Pareja besándose sobre cojines junto a un tipi de flores al atardecer',
+    all: ['Cuatro', 'reseñas completas'], gallery: ['Sus', 'picnics'],
+    leave: '¿Tuviste un picnic con nosotros?', leaveLead: 'Cuéntale a Zoe cómo te fue. Con tu permiso, agregamos tu reseña a esta página.',
+    intro2: 'Hola Zoe, esta es mi reseña de nuestro picnic.',
+    name: ['Tu nombre', 'Nombre'], picnic: ['Tu picnic', 'Picnic'], rating: ['Tu calificación', 'Calificación'], outOf: (n) => `${n} de 5`,
+    review: ['Tu reseña', 'Reseña'], placeholder: 'La ocasión, el montaje, la comida, el momento que recuerdas',
+    publish: ['Sí, pueden publicarla con mi nombre y la inicial de mi apellido', 'Publicar en la web', 'Pueden publicar mi reseña con mi nombre y la inicial de mi apellido.'],
+    send: 'Enviar mi reseña', thanks: 'Gracias por tomarte el tiempo.',
+    ready: 'Tu reseña está lista para enviar', readyCopy: 'Envíasela a Zoe por WhatsApp o Instagram.',
+    open: 'Abrir WhatsApp', copy: 'Copiar reseña', edit: 'Editar reseña',
+  },
+}[lang];
+const crumbs = [{ href: route(lang, 'home'), label: ui.home }, { href: route(lang, 'reviews'), label: ui.reviews }];
+---
+<Base lang={lang} alt={routePair('reviews')} title={C.title} description={C.description} jsonld={[breadcrumbSchema(crumbs)]}>
+  <PageHero
+    lang={lang}
+    crumbs={crumbs}
+    title={C.h1}
+    intro={C.intro}
+    cta={{ href: '#leave-review', label: C.cta }}
+    image={{ img: 'g-kiss', w: 900, h: 1125, alt: C.alt, sizes: [600, 900] }}
+  />
+  <Reviews long more={false} before={C.all[0]} after={C.all[1]} id="all-reviews" lang={lang} />
+  <Polaroids keys={['pol-proposal-hug', 'g-silhouettes', 'pol-group-arms']} before={C.gallery[0]} after={C.gallery[1]} pill="pill-golden.webp" lang={lang} />
+
+  <section class="section section--sand" id="leave-review" aria-labelledby="leave-title">
+    <div class="container booking">
+      <div class="booking__aside reveal">
+        <div class="section-head" style="margin-bottom: 0;">
+          <h2 class="h2" id="leave-title">{C.leave}</h2>
+          <p class="lead">{C.leaveLead}</p>
+        </div>
+      </div>
+      <div class="form-card reveal reveal-d1">
+        <form class="compose" data-compose data-intro={C.intro2} data-subject="review" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="r-name">{C.name[0]}</label>
+              <input class="input" id="r-name" name="name" type="text" autocomplete="name" required data-label={C.name[1]} aria-describedby="r-name-error">
+              <p class="field__error" id="r-name-error" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="r-picnic">{C.picnic[0]}</label>
+              <select class="input" id="r-picnic" name="picnic" data-label={C.picnic[1]}>
+                {EXPERIENCES.map((e) => <option>{e.booking}</option>)}
+              </select>
+            </div>
+            <fieldset class="field field--full">
+              <legend>{C.rating[0]}</legend>
+              <div class="rating">
+                {[5, 4, 3, 2, 1].map((n) => (
+                  <>
+                    <input type="radio" id={`r-star-${n}`} name="rating" value={C.outOf(n)} data-label={C.rating[1]} checked={n === 5}>
+                    <label for={`r-star-${n}`}><svg class="icon" aria-hidden="true"><use href="#i-star"/></svg><span class="sr-only">{C.outOf(n)}</span></label>
+                  </>
+                ))}
+              </div>
+            </fieldset>
+            <div class="field field--full">
+              <label for="r-text">{C.review[0]}</label>
+              <textarea class="input" id="r-text" name="review" rows="5" required data-label={C.review[1]} aria-describedby="r-text-error" placeholder={C.placeholder}></textarea>
+              <p class="field__error" id="r-text-error" role="alert"></p>
+            </div>
+            <label class="check field--full">
+              <input type="checkbox" name="publish" value={C.publish[0]} data-label={C.publish[1]}>
+              <span>{C.publish[2]}</span>
+            </label>
+          </div>
+          <div class="form-foot">
+            <button class="btn btn--primary" type="submit"><svg class="icon"><use href="#i-whatsapp-logo"/></svg> {C.send}</button>
+            <p>{C.thanks}</p>
+          </div>
+          <p class="form-status" role="alert" hidden></p>
+        </form>
+        <div class="success" data-compose-success hidden tabindex="-1">
+          <span class="success__badge" aria-hidden="true"><svg class="icon"><use href="#i-l-check"/></svg></span>
+          <h3>{C.ready}</h3>
+          <p data-success-copy>{C.readyCopy}</p>
+          <div class="success__actions">
+            <a class="btn btn--primary" data-send-link href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp-logo" data-send-icon/></svg> <span data-send-label>{C.open}</span></a>
+            <button class="btn btn--ghost" type="button" data-copy><svg class="icon"><use href="#i-copy"/></svg> <span>{C.copy}</span></button>
+            <button class="btn btn--ghost" type="button" data-edit>{C.edit}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <FinalCta lang={lang} />
+</Base>

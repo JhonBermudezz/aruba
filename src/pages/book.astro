@@ -1,16 +1,4 @@
 ---
-import Base from '../layouts/Base.astro';
-import BookingSection from '../components/BookingSection.astro';
-import Faq from '../components/Faq.astro';
-import { breadcrumbSchema, faqSchema } from '../data/schema.js';
-const crumbs = [{ href: '/', label: 'Home' }, { href: '/book/', label: 'Book' }];
-const faqKeys = ['deposit', 'cancellation', 'advance', 'price', 'weather'];
+import View from '../views/Book.astro';
 ---
-<Base
-  title="Book a beach picnic in Aruba | One Happy Picnic"
-  description="Request a date for your private beach picnic in Aruba. Pick the experience, the date and your guests, and we confirm availability on WhatsApp."
-  jsonld={[breadcrumbSchema(crumbs), faqSchema(faqKeys)]}
->
-  <BookingSection id="book" asPageTitle />
-  <Faq keys={faqKeys} heading="Before you book" />
-</Base>
+<View lang="en" />

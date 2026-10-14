@@ -15,6 +15,8 @@
   const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   window.__ohpReady = true;
+  const ES = document.documentElement.lang === 'es';
+  const tr = (en, es) => (ES ? es : en);
 
   /* ---------- Sunset time (NOAA almanac method, accurate to about two minutes) ---------- */
   function sunsetHour(y, m, d) {
@@ -49,7 +51,7 @@
     return { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() };
   }
   const isoDate = ({ y, m, d }) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-  const fmtDate = ({ y, m, d }, opts) => new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', ...opts }).format(new Date(Date.UTC(y, m - 1, d)));
+  const fmtDate = ({ y, m, d }, opts) => new Intl.DateTimeFormat(ES ? 'es-ES' : 'en-US', { timeZone: 'UTC', ...opts }).format(new Date(Date.UTC(y, m - 1, d)));
 
   // After sunset in Aruba, every live time on the page switches to tomorrow's sunset.
   const sunsetDay = (() => {
@@ -60,8 +62,8 @@
 
   (function paintSunset() {
     const day = sunsetDay;
-    const todayLabel = day.tomorrow ? 'Sunset tomorrow' : 'Sunset today';
-    const finalLabel = day.tomorrow ? 'Tomorrow’s sunset in Aruba' : 'Tonight’s sunset in Aruba';
+    const todayLabel = day.tomorrow ? tr('Sunset tomorrow', 'Atardecer mañana') : tr('Sunset today', 'Atardecer hoy');
+    const finalLabel = day.tomorrow ? tr('Tomorrow’s sunset in Aruba', 'Atardecer de mañana en Aruba') : tr('Tonight’s sunset in Aruba', 'Atardecer de hoy en Aruba');
     const time = fmtHour(sunsetHour(day.y, day.m, day.d));
     $$('[data-sunset-today]').forEach((el) => { el.textContent = time; });
     $$('[data-sunset-label]').forEach((el) => { el.textContent = todayLabel; });
@@ -73,7 +75,7 @@
   const igDm = `https://ig.me/m/${CONFIG.instagram}`;
   const waLink = (text) => `https://wa.me/${CONFIG.whatsapp}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
   if (CONFIG.whatsapp) {
-    $$('[data-wa]').forEach((a) => { a.href = waLink('Hi One Happy Picnic, I have a question about a picnic.'); a.target = '_blank'; a.rel = 'noopener'; a.hidden = false; });
+    $$('[data-wa]').forEach((a) => { a.href = waLink(tr('Hi One Happy Picnic, I have a question about a picnic.', 'Hola One Happy Picnic, tengo una pregunta sobre un picnic.')); a.target = '_blank'; a.rel = 'noopener'; a.hidden = false; });
     $$('[data-wa-item]').forEach((li) => { li.hidden = false; });
   }
   if (CONFIG.phone) {
@@ -96,12 +98,12 @@
     if (CONFIG.whatsapp) {
       link.href = waLink(message);
       if (icon) icon.setAttribute('href', '#i-whatsapp-logo');
-      if (label) label.textContent = 'Open WhatsApp';
+      if (label) label.textContent = tr('Open WhatsApp', 'Abrir WhatsApp');
       window.open(link.href, '_blank', 'noopener');
     } else {
       link.href = igDm;
       if (icon) icon.setAttribute('href', '#i-instagram-logo');
-      if (label) label.textContent = 'Send on Instagram';
+      if (label) label.textContent = tr('Send on Instagram', 'Enviar por Instagram');
     }
   }
   function copyText(text, labelEl, reset) {
@@ -111,9 +113,9 @@
       ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
       document.body.appendChild(ta); ta.select();
       let ok = false; try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
-      ta.remove(); done(ok ? 'Copied' : 'Copy failed. Select the text instead.');
+      ta.remove(); done(ok ? tr('Copied', 'Copiado') : tr('Copy failed. Select the text instead.', 'No se pudo copiar. Selecciona el texto.'));
     };
-    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(() => done('Copied'), fallback);
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(() => done(tr('Copied', 'Copiado')), fallback);
     else fallback();
   }
 
@@ -122,7 +124,7 @@
   const menu = $('#menu');
   function setMenu(open) {
     burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    burger.setAttribute('aria-label', open ? tr('Close menu', 'Cerrar menú') : tr('Open menu', 'Abrir menú'));
     menu.classList.toggle('is-open', open);
     menu.setAttribute('aria-hidden', String(!open));
     document.body.style.overflow = open ? 'hidden' : '';
@@ -191,11 +193,11 @@
   const S = sunsetHour(sunsetDay.y, sunsetDay.m, sunsetDay.d);
   const start = roundQuarter(S - 1.75);
   const nightStart = roundQuarter(S + 0.5);
-  const times = { today: 'Today', sameday: 'Same day', start: fmtHour(start), sunset: fmtHour(S), end: fmtHour(start + 2), nstart: fmtHour(nightStart), nend: fmtHour(nightStart + 2) };
+  const times = { today: tr('Today', 'Hoy'), sameday: tr('Same day', 'El mismo día'), start: fmtHour(start), sunset: fmtHour(S), end: fmtHour(start + 2), nstart: fmtHour(nightStart), nend: fmtHour(nightStart + 2) };
   $$('.how').forEach((how) => {
     $$('[data-time]', how).forEach((el) => { if (times[el.dataset.time]) el.textContent = times[el.dataset.time]; });
     const dayLabel = $('[data-how-day]', how);
-    if (dayLabel && sunsetDay.tomorrow) dayLabel.textContent = 'tomorrow’s';
+    if (dayLabel && sunsetDay.tomorrow) dayLabel.textContent = tr('tomorrow’s', 'de mañana');
 
     const steps = $$('.how__step', how);
     const frames = $$('.how__frame img', how);
@@ -250,8 +252,8 @@
     const check = (input) => {
       const v = input.value.trim();
       let msg = '';
-      if (input.required && !v) msg = input.type === 'email' ? 'Enter your email address.' : `Fill in ${(input.dataset.label || 'this field').toLowerCase()}.`;
-      else if (input.type === 'email' && v && !MAIL_RE.test(v)) msg = 'Check your email address, it looks incomplete.';
+      if (input.required && !v) msg = input.type === 'email' ? tr('Enter your email address.', 'Escribe tu correo.') : tr(`Fill in ${(input.dataset.label || 'this field').toLowerCase()}.`, `Completa ${(input.dataset.label || 'este campo').toLowerCase()}.`);
+      else if (input.type === 'email' && v && !MAIL_RE.test(v)) msg = tr('Check your email address, it looks incomplete.', 'Revisa tu correo, parece incompleto.');
       input.setAttribute('aria-invalid', msg ? 'true' : 'false');
       const err = $(`#${input.id}-error`);
       if (err) err.textContent = msg;
@@ -265,7 +267,7 @@
     cform.addEventListener('submit', (e) => {
       e.preventDefault();
       if (required.map(check).includes(false)) {
-        status.textContent = 'Some details are missing. Check the highlighted fields.';
+        status.textContent = tr('Some details are missing. Check the highlighted fields.', 'Faltan datos. Revisa los campos marcados.');
         status.hidden = false;
         $('[aria-invalid="true"]', cform)?.focus();
         return;
@@ -279,7 +281,7 @@
       });
       message = [cform.dataset.intro, '', ...lines].join('\n');
       const copy = $('[data-success-copy]', done);
-      if (copy && !CONFIG.whatsapp) copy.textContent = `Copy your ${cform.dataset.subject || 'message'}, then paste it in our Instagram chat.`;
+      if (copy && !CONFIG.whatsapp) copy.textContent = tr(`Copy your ${cform.dataset.subject || 'message'}, then paste it in our Instagram chat.`, 'Copia tu mensaje y pégalo en nuestro chat de Instagram.');
       wireSendLink($('[data-send-link]', done), message);
       cform.hidden = true; done.hidden = false;
       done.focus({ preventScroll: true });
@@ -308,19 +310,20 @@
   $$('[data-experience]').forEach((a) => a.addEventListener('click', () => { fields.experience.value = a.dataset.experience; }));
 
   const parseISO = (v) => { const [y, m, d] = v.split('-').map(Number); return y && m && d ? { y, m, d } : null; };
-  const timeChoice = () => (form.querySelector('input[name="time"]:checked') || {}).value || 'Golden hour';
+  const timeInput = () => form.querySelector('input[name="time"]:checked');
+  const timeChoice = () => (timeInput() || {}).dataset?.kind || 'golden';
   function plannedTime(day) {
     const sunset = sunsetHour(day.y, day.m, day.d);
     const choice = timeChoice();
-    if (choice === 'Golden hour') return { sunset, text: `Golden hour picnics start around ${fmtHour(roundQuarter(sunset - 1.75))}.` };
-    if (choice === 'Under the stars') return { sunset, text: `Moonlight picnics start around ${fmtHour(roundQuarter(sunset + 0.5))}.` };
-    return { sunset, text: 'Morning picnics are planned around your schedule.' };
+    if (choice === 'golden') return { sunset, text: tr(`Golden hour picnics start around ${fmtHour(roundQuarter(sunset - 1.75))}.`, `Los picnics de hora dorada empiezan hacia las ${fmtHour(roundQuarter(sunset - 1.75))}.`) };
+    if (choice === 'stars') return { sunset, text: tr(`Moonlight picnics start around ${fmtHour(roundQuarter(sunset + 0.5))}.`, `Los picnics nocturnos empiezan hacia las ${fmtHour(roundQuarter(sunset + 0.5))}.`) };
+    return { sunset, text: tr('Morning picnics are planned around your schedule.', 'Los picnics de mañana se planean según tu horario.') };
   }
   function paintHint() {
     const day = parseISO(fields.date.value);
-    if (!day) { dateHint.textContent = 'Pick a date to see that day’s sunset time in Aruba.'; return; }
+    if (!day) { dateHint.textContent = tr('Pick a date to see that day’s sunset time in Aruba.', 'Elige una fecha para ver a qué hora es el atardecer ese día en Aruba.'); return; }
     const { sunset, text } = plannedTime(day);
-    dateHint.textContent = `Sunset on ${fmtDate(day, { weekday: 'short', month: 'short', day: 'numeric' })} is at ${fmtHour(sunset)}. ${text}`;
+    dateHint.textContent = tr(`Sunset on ${fmtDate(day, { weekday: 'short', month: 'short', day: 'numeric' })} is at ${fmtHour(sunset)}. ${text}`, `El ${fmtDate(day, { weekday: 'short', day: 'numeric', month: 'short' })} el sol se pone a las ${fmtHour(sunset)}. ${text}`);
   }
   fields.date.addEventListener('change', paintHint);
   $$('input[name="time"]', form).forEach((r) => r.addEventListener('change', paintHint));
@@ -334,14 +337,14 @@
   }
   function validate(input) {
     const v = input.value.trim();
-    if (input === fields.name) return setError(input, v ? '' : 'Enter your name so we know who to reply to.');
+    if (input === fields.name) return setError(input, v ? '' : tr('Enter your name so we know who to reply to.', 'Escribe tu nombre para saber a quién responder.'));
     if (input === fields.email) {
-      if (!v) return setError(input, 'Enter your email address.');
-      return setError(input, EMAIL_RE.test(v) ? '' : 'Check your email address, it looks incomplete.');
+      if (!v) return setError(input, tr('Enter your email address.', 'Escribe tu correo.'));
+      return setError(input, EMAIL_RE.test(v) ? '' : tr('Check your email address, it looks incomplete.', 'Revisa tu correo, parece incompleto.'));
     }
     if (input === fields.date) {
-      if (!v) return setError(input, 'Choose the date for your picnic.');
-      return setError(input, v < input.min ? `Choose a date from ${fmtDate(minDay, { month: 'short', day: 'numeric' })} onward.` : '');
+      if (!v) return setError(input, tr('Choose the date for your picnic.', 'Elige la fecha de tu picnic.'));
+      return setError(input, v < input.min ? tr(`Choose a date from ${fmtDate(minDay, { month: 'short', day: 'numeric' })} onward.`, `Elige una fecha desde el ${fmtDate(minDay, { day: 'numeric', month: 'short' })}.`) : '');
     }
     return true;
   }
@@ -356,7 +359,7 @@
     const status = $('#form-status');
     const checks = [fields.date, fields.name, fields.email].map(validate);
     if (checks.includes(false)) {
-      status.textContent = 'Some details are missing. Check the highlighted fields.';
+      status.textContent = tr('Some details are missing. Check the highlighted fields.', 'Faltan datos. Revisa los campos marcados.');
       status.hidden = false;
       form.querySelector('[aria-invalid="true"]')?.focus();
       return;
@@ -366,19 +369,19 @@
     const day = parseISO(fields.date.value);
     const { sunset } = plannedTime(day);
     const longDate = fmtDate(day, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-    const time = timeChoice();
+    const time = (timeInput() || {}).value || "";
     const rows = [
-      ['Experience', fields.experience.value],
-      ['Date', longDate],
-      ['Time', time === 'Morning' ? time : `${time} (sunset ${fmtHour(sunset)})`],
-      ['Guests', fields.guests.value],
-      ['Name', fields.name.value.trim()],
-      ['Email', fields.email.value.trim()],
+      [tr('Experience', 'Experiencia'), fields.experience.value],
+      [tr('Date', 'Fecha'), longDate],
+      [tr('Time', 'Momento'), timeChoice() === 'morning' ? time : `${time} (${tr('sunset', 'atardecer')} ${fmtHour(sunset)})`],
+      [tr('Guests', 'Invitados'), fields.guests.value],
+      [tr('Name', 'Nombre'), fields.name.value.trim()],
+      [tr('Email', 'Correo'), fields.email.value.trim()],
     ];
     if (fields.phone.value.trim()) rows.push(['WhatsApp', fields.phone.value.trim()]);
-    if (fields.notes.value.trim()) rows.push(['Notes', fields.notes.value.trim()]);
+    if (fields.notes.value.trim()) rows.push([tr('Notes', 'Notas'), fields.notes.value.trim()]);
 
-    lastMessage = ['Hi One Happy Picnic, I would like to request a picnic.', '', ...rows.map(([k, v]) => `${k}: ${v}`)].join('\n');
+    lastMessage = [tr('Hi One Happy Picnic, I would like to request a picnic.', 'Hola One Happy Picnic, quiero pedir un picnic.'), '', ...rows.map(([k, v]) => `${k}: ${v}`)].join('\n');
 
     const summary = $('#booking-summary');
     summary.replaceChildren(...rows.slice(0, 4).map(([k, v]) => {
@@ -391,15 +394,15 @@
     const sendLink = $('#send-link');
     if (CONFIG.whatsapp) {
       sendLink.href = waLink(lastMessage);
-      $('[data-send-label]').textContent = 'Open WhatsApp';
+      $('[data-send-label]').textContent = tr('Open WhatsApp', 'Abrir WhatsApp');
       $('[data-send-icon]').setAttribute('href', '#i-whatsapp-logo');
-      $('[data-success-copy]').textContent = `Send it on WhatsApp and we will reply with availability for ${fmtDate(day, { month: 'long', day: 'numeric' })}.`;
+      $('[data-success-copy]').textContent = tr(`Send it on WhatsApp and we will reply with availability for ${fmtDate(day, { month: 'long', day: 'numeric' })}.`, `Envíalo por WhatsApp y te respondemos con la disponibilidad para el ${fmtDate(day, { day: 'numeric', month: 'long' })}.`);
       window.open(sendLink.href, '_blank', 'noopener');
     } else {
       sendLink.href = igDm;
-      $('[data-send-label]').textContent = 'Send on Instagram';
+      $('[data-send-label]').textContent = tr('Send on Instagram', 'Enviar por Instagram');
       $('[data-send-icon]').setAttribute('href', '#i-instagram-logo');
-      $('[data-success-copy]').textContent = `Copy your message, then paste it in our Instagram chat. We will reply with availability for ${fmtDate(day, { month: 'long', day: 'numeric' })}.`;
+      $('[data-success-copy]').textContent = tr(`Copy your message, then paste it in our Instagram chat. We will reply with availability for ${fmtDate(day, { month: 'long', day: 'numeric' })}.`, `Copia tu mensaje y pégalo en nuestro chat de Instagram. Te respondemos con la disponibilidad para el ${fmtDate(day, { day: 'numeric', month: 'long' })}.`);
     }
 
     form.hidden = true;
@@ -410,15 +413,15 @@
 
   $('#copy-message').addEventListener('click', (e) => {
     const label = $('span', e.currentTarget);
-    const done = (text) => { label.textContent = text; setTimeout(() => { label.textContent = 'Copy message'; }, 2400); };
+    const done = (text) => { label.textContent = text; setTimeout(() => { label.textContent = tr('Copy message', 'Copiar mensaje'); }, 2400); };
     const fallback = () => {
       const ta = document.createElement('textarea');
       ta.value = lastMessage; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
       document.body.appendChild(ta); ta.select();
       let ok = false; try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
-      ta.remove(); done(ok ? 'Copied' : 'Copy failed. Select the summary instead.');
+      ta.remove(); done(ok ? tr('Copied', 'Copiado') : tr('Copy failed. Select the summary instead.', 'No se pudo copiar. Selecciona el resumen.'));
     };
-    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(lastMessage).then(() => done('Copied'), fallback);
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(lastMessage).then(() => done(tr('Copied', 'Copiado')), fallback);
     else fallback();
   });
 

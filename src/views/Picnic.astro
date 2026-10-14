@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Included from '../components/Included.astro';
+import Timeline from '../components/Timeline.astro';
+import Polaroids from '../components/Polaroids.astro';
+import Reviews from '../components/Reviews.astro';
+import Faq from '../components/Faq.astro';
+import OtherPicnics from '../components/OtherPicnics.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { SITE } from '../data/site.js';
+import { getData, t, route, expHref, expSlug, expPair } from '../i18n.js';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../data/schema.js';
+
+const { e, lang = 'en' } = Astro.props;
+const ui = t(lang);
+const { TIMELINES } = getData(lang);
+const href = expHref(lang, e);
+const crumbs = [{ href: route(lang, 'home'), label: ui.home }, { href: route(lang, 'picnics'), label: ui.picnics }, { href, label: e.name }];
+const bookHref = `${route(lang, 'book')}#${expSlug(lang, e)}`;
+const board = e.slug === 'charcuterie-boards';
+const C = {
+  en: {
+    cta: board ? 'Order a board' : 'Book this picnic',
+    included: board ? 'On every board' : `Included in your ${e.name.toLowerCase()}`,
+    boardPhoto: { file: 'p-charcuterie', alt: 'A round wooden charcuterie board with strawberries, chocolates, salami and cheese', caption: 'A board for two', note: 'ready to eat.' },
+    photos: ['Photos from', 'real setups'], reviews: ['Reviews from', 'guests'],
+    finalTitle: board ? 'Order your board a day ahead' : 'Pick a date and we will set the table',
+    finalText: board ? 'Pickup or delivery to your hotel, villa or boat.' : 'Setup, food, drinks and cleanup are included in every picnic.',
+  },
+  es: {
+    cta: board ? 'Pedir una tabla' : 'Reservar este picnic',
+    included: {
+      'sunset-picnic': 'Lo que incluye tu picnic al atardecer', 'moonlight-picnic': 'Lo que incluye tu picnic nocturno',
+      'proposal-setup': 'Lo que incluye tu propuesta', 'birthday-anniversary-picnic': 'Lo que incluye tu celebración',
+      'group-bachelorette-picnic': 'Lo que incluye tu picnic de grupo', 'charcuterie-boards': 'En cada tabla',
+    }[e.slug],
+    boardPhoto: { file: 'p-charcuterie', alt: 'Tabla redonda de madera con fresas, chocolates, salami y queso', caption: 'Tabla para dos', note: 'lista para comer.' },
+    photos: ['Fotos de', 'montajes reales'], reviews: ['Reseñas de', 'invitados'],
+    finalTitle: board ? 'Pide tu tabla con un día de anticipación' : 'Elige una fecha y nosotros ponemos la mesa',
+    finalText: board ? 'Recogida o entrega en tu hotel, villa o barco.' : 'Montaje, comida, bebidas y recogida incluidos en cada picnic.',
+  },
+}[lang];
+---
+<Base
+  lang={lang}
+  alt={expPair(e.slug)}
+  title={e.seo.title}
+  description={e.seo.description}
+  image={`/assets/img/${e.card.img}-960.webp`}
+  imageAlt={e.card.alt}
+  jsonld={[serviceSchema(e, `${SITE.url}${href}`), breadcrumbSchema(crumbs), faqSchema(e.faqs, lang)]}
+>
+  <PageHero lang={lang} crumbs={crumbs} title={e.h1} intro={e.intro} facts={e.facts} cta={{ href: bookHref, label: C.cta }} image={e.hero} />
+  <Included lang={lang} heading={C.included} lead={e.includedLead} items={e.included} extras={e.extras} photo={board ? C.boardPhoto : undefined} />
+  <Timeline data={TIMELINES[e.timeline]} lang={lang} />
+  <Polaroids keys={e.photos} before={C.photos[0]} after={C.photos[1]} pill="pill-teepee.webp" lang={lang} />
+  <Reviews keys={e.reviews} before={C.reviews[0]} pill="pill-kiss.webp" after={C.reviews[1]} lang={lang} />
+  <Faq keys={e.faqs} heading={e.faqTitle} lang={lang} />
+  <OtherPicnics exclude={e.slug} lang={lang} />
+  <FinalCta href={bookHref} title={C.finalTitle} text={C.finalText} label={C.cta} lang={lang} />
+</Base>

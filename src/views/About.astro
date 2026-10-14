@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Touches from '../components/Touches.astro';
+import Polaroids from '../components/Polaroids.astro';
+import Reviews from '../components/Reviews.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { SITE } from '../data/site.js';
+import { t, route, routePair } from '../i18n.js';
+import { business, breadcrumbSchema } from '../data/schema.js';
+
+const { lang = 'en' } = Astro.props;
+const ui = t(lang);
+const C = {
+  en: {
+    crumb: 'About', title: 'About Zoe and One Happy Picnic Aruba', schemaName: 'About One Happy Picnic Aruba',
+    description: "One Happy Picnic is Zoe's picnic company in Aruba. She started with charcuterie boards and now sets up private beach picnics for couples, families and groups.",
+    h1: 'About One Happy Picnic',
+    intro: "One Happy Picnic is Zoe's picnic company in Aruba. She started with charcuterie boards, and today she and her team set up private picnics on the beach for couples, families and groups.",
+    cta: 'See our picnics', secondary: 'Contact Zoe', alt: 'A bamboo teepee with pastel cushions on a woven rug facing the sea',
+    story: 'It started with a board',
+    paras: [
+      'Zoe started One Happy Picnic with charcuterie boards. The beach picnics came after, and the boards are still on every table we set.',
+      'Each picnic is planned with you on WhatsApp. You tell us the occasion, the colors and the people coming, and we build the setup around that: the teepee, the flowers, the food, your printed photos and a note on the table.',
+      'We set up on Eagle Beach and Surfside, and on other beaches on request.',
+    ],
+    values: 'Three things guests can count on', valuesLead: 'Each one comes with a guest review behind it.',
+    valueTitles: ['We arrive before you do', 'We make it personal', 'We keep prices fair'],
+    touches: 'The details guests write about', gallery: ['Our', 'guests'], reviews: ['In their', 'words'],
+  },
+  es: {
+    crumb: 'Nosotros', title: 'Sobre Zoe y One Happy Picnic Aruba', schemaName: 'Sobre One Happy Picnic Aruba',
+    description: 'One Happy Picnic es la empresa de picnics de Zoe en Aruba. Empezó con tablas de charcutería y hoy monta picnics privados en la playa para parejas, familias y grupos.',
+    h1: 'Sobre One Happy Picnic',
+    intro: 'One Happy Picnic es la empresa de picnics de Zoe en Aruba. Empezó con tablas de charcutería, y hoy ella y su equipo montan picnics privados en la playa para parejas, familias y grupos.',
+    cta: 'Ver nuestros picnics', secondary: 'Escribirle a Zoe', alt: 'Tipi de bambú con cojines pastel sobre una alfombra tejida frente al mar',
+    story: 'Todo empezó con una tabla',
+    paras: [
+      'Zoe empezó One Happy Picnic con tablas de charcutería. Los picnics en la playa vinieron después, y las tablas siguen en cada mesa que montamos.',
+      'Cada picnic se planea contigo por WhatsApp. Nos cuentas la ocasión, los colores y quiénes van, y armamos el montaje alrededor de eso: el tipi, las flores, la comida, tus fotos impresas y una nota sobre la mesa.',
+      'Montamos en Eagle Beach y Surfside, y en otras playas si nos lo pides.',
+    ],
+    values: 'Tres cosas con las que puedes contar', valuesLead: 'Cada una viene con una reseña de un invitado detrás.',
+    valueTitles: ['Llegamos antes que tú', 'Lo hacemos personal', 'Precios justos'],
+    touches: 'Los detalles de los que escriben los invitados', gallery: ['Nuestros', 'invitados'], reviews: ['En sus', 'palabras'],
+  },
+}[lang];
+const crumbs = [{ href: route(lang, 'home'), label: ui.home }, { href: route(lang, 'about'), label: C.crumb }];
+const about = { '@context': 'https://schema.org', '@type': 'AboutPage', name: C.schemaName, inLanguage: lang, url: `${SITE.url}${route(lang, 'about')}`, about: { '@id': `${SITE.url}/#business` } };
+const quotes = [['Everything was delivered on time.', 'Tatyana C.'], ['She printed off photos of my partner and I.', 'Taylor T.'], ['Also very affordable.', 'Tatyana C.']];
+---
+<Base lang={lang} alt={routePair('about')} title={C.title} description={C.description} jsonld={[about, business, breadcrumbSchema(crumbs)]}>
+  <PageHero
+    lang={lang}
+    crumbs={crumbs}
+    title={C.h1}
+    intro={C.intro}
+    cta={{ href: route(lang, 'picnics'), label: C.cta }}
+    secondary={{ href: route(lang, 'contact'), label: C.secondary }}
+    image={{ img: 'p-about', w: 1000, h: 1250, alt: C.alt }}
+  />
+
+  <section class="section section--sand" aria-labelledby="story-title">
+    <div class="container story">
+      <h2 class="h2 reveal" id="story-title">{C.story}</h2>
+      <div class="story__text reveal reveal-d1">
+        {C.paras.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 class="h2" id="values-title">{C.values}</h2>
+        <p class="lead">{C.valuesLead}</p>
+      </div>
+      <ul class="values">
+        {C.valueTitles.map((title, i) => (
+          <li class={`reveal${['', ' reveal-d1', ' reveal-d2'][i]}`}>
+            <h3>{title}</h3>
+            <p><q lang="en">{quotes[i][0]}</q> {quotes[i][1]}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Touches heading={C.touches} lang={lang} />
+  <Polaroids keys={['g-family', 'pol-group-table', 'g-birthday-23']} before={C.gallery[0]} after={C.gallery[1]} pill="pill-golden.webp" lang={lang} />
+  <Reviews keys={['susan', 'taylor']} before={C.reviews[0]} after={C.reviews[1]} lang={lang} />
+  <FinalCta lang={lang} />
+</Base>
