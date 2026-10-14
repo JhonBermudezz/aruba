@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://onehappypicnicaruba.com/sitemap.xml
