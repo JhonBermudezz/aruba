@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Touches from '../components/Touches.astro';
+import Polaroids from '../components/Polaroids.astro';
+import Reviews from '../components/Reviews.astro';
+import FinalCta from '../components/FinalCta.astro';
+import { SITE } from '../data/site.js';
+import { business, breadcrumbSchema } from '../data/schema.js';
+
+const crumbs = [{ href: '/', label: 'Home' }, { href: '/about/', label: 'About' }];
+const about = { '@context': 'https://schema.org', '@type': 'AboutPage', name: 'About One Happy Picnic Aruba', url: `${SITE.url}/about/`, about: { '@id': `${SITE.url}/#business` } };
+const values = [
+  { title: 'We arrive before you do', quote: 'Everything was delivered on time.', who: 'Tatyana C.' },
+  { title: 'We make it personal', quote: 'She printed off photos of my partner and I.', who: 'Taylor T.' },
+  { title: 'We keep prices fair', quote: 'Also very affordable.', who: 'Tatyana C.' },
+];
+---
+<Base
+  title="About Zoe and One Happy Picnic Aruba"
+  description="One Happy Picnic is Zoe's picnic company in Aruba. She started with charcuterie boards and now sets up private beach picnics for couples, families and groups."
+  jsonld={[about, business, breadcrumbSchema(crumbs)]}
+>
+  <PageHero
+    crumbs={crumbs}
+    title="About One Happy Picnic"
+    intro="One Happy Picnic is Zoe's picnic company in Aruba. She started with charcuterie boards, and today she and her team set up private picnics on the beach for couples, families and groups."
+    cta={{ href: '/picnics/', label: 'See our picnics' }}
+    secondary={{ href: '/contact/', label: 'Contact Zoe' }}
+    image={{ img: 'p-about', w: 1000, h: 1250, alt: 'A bamboo teepee with pastel cushions on a woven rug facing the sea' }}
+  />
+
+  <section class="section section--sand" aria-labelledby="story-title">
+    <div class="container story">
+      <h2 class="h2 reveal" id="story-title">It started with a board</h2>
+      <div class="story__text reveal reveal-d1">
+        <p>Zoe started One Happy Picnic with charcuterie boards. The beach picnics came after, and the boards are still on every table we set.</p>
+        <p>Each picnic is planned with you on WhatsApp. You tell us the occasion, the colors and the people coming, and we build the setup around that: the teepee, the flowers, the food, your printed photos and a note on the table.</p>
+        <p>We set up on Eagle Beach and Surfside, and on other beaches on request.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 class="h2" id="values-title">Three things guests can count on</h2>
+        <p class="lead">Each one comes with a guest review behind it.</p>
+      </div>
+      <ul class="values">
+        {values.map((v, i) => (
+          <li class={`reveal${['', ' reveal-d1', ' reveal-d2'][i]}`}>
+            <h3>{v.title}</h3>
+            <p><q>{v.quote}</q> {v.who}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Touches heading="The details guests write about" />
+  <Polaroids keys={['g-family', 'pol-group-table', 'g-birthday-23']} before="Our" after="guests" pill="pill-golden.webp" />
+  <Reviews keys={['susan', 'taylor']} before="In their" after="words" />
+  <FinalCta />
+</Base>

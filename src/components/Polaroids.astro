@@ -1,0 +1,31 @@
+---
+import Pill from './Pill.astro';
+import { PHOTOS, SITE, img } from '../data/site.js';
+const { keys, before = 'Recent', after = 'setups', pill = 'pill-teepee.webp', instagram = true, id = 'gallery' } = Astro.props;
+const tilts = ['-2deg', '1.5deg', '-1deg', '1deg', '-1.5deg', '2deg', '-1deg', '1.5deg', '-2deg'];
+const items = keys.map((k) => {
+  const p = PHOTOS[k];
+  const src = p.src || `${k}-600.webp`;
+  return { ...p, src: img(src), full: img(p.full ? `${k}-900.webp` : src) };
+});
+---
+<section class="section section--lagoon" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <div class="gallery-head">
+      <div class="section-head reveal">
+        <h2 class="h2" id={`${id}-title`}>{before} <Pill file={pill} /> {after}</h2>
+      </div>
+      {instagram && <a class="btn btn--ghost reveal" href={SITE.instagram} target="_blank" rel="noopener"><svg class="icon"><use href="#i-instagram-logo"/></svg> {SITE.handle}</a>}
+    </div>
+    <div class="gallery">
+      {items.map((p, i) => (
+        <div class={`gallery__item reveal${['', ' reveal-d1', ' reveal-d2'][i % 3]}`}>
+          <button type="button" class="polaroid" style={`--tilt: ${tilts[i % tilts.length]};`} data-full={p.full}>
+            <img src={p.src} width={p.w} height={p.h} loading="lazy" alt={p.alt}>
+            <span class="polaroid__caption">{p.caption}</span>
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

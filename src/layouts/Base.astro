@@ -1,0 +1,151 @@
+---
+import Sprite from '../components/Sprite.astro';
+import { SITE, NAV, EXPERIENCES } from '../data/site.js';
+
+const {
+  title,
+  description,
+  image = SITE.ogImage,
+  imageAlt = 'A bamboo teepee with pink flowers over a low picnic table and cushions on the sand at sunset in Aruba',
+  jsonld = [],
+  noindex = false,
+  preload = [],
+  bare = false,
+} = Astro.props;
+
+const path = Astro.url.pathname;
+const canonical = new URL(path, SITE.url).href;
+const isCurrent = (href) => path === href || (href !== '/' && path.startsWith(href));
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{title}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  {noindex && <meta name="robots" content="noindex">}
+  <meta name="theme-color" content="#FFFAF6">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content={SITE.name}>
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:url" content={canonical}>
+  <meta property="og:image" content={new URL(image, SITE.url).href}>
+  <meta property="og:image:alt" content={imageAlt}>
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap">
+  {preload.map((p) => <link rel="preload" as="image" href={p.href} media={p.media}>)}
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script is:inline>
+    document.documentElement.classList.add('js');
+    setTimeout(function () { if (!window.__ohpReady) document.documentElement.classList.remove('js'); }, 3000);
+  </script>
+  {jsonld.map((data) => <script type="application/ld+json" is:inline set:html={JSON.stringify(data)} />)}
+</head>
+<body>
+<Sprite />
+<a class="skip-link" href="#main">Skip to content</a>
+
+{!bare && (
+  <>
+    <div class="nav-wrap">
+      <nav class="nav" aria-label="Main">
+        <a class="nav__brand" href="/" aria-label="One Happy Picnic Aruba, home">
+          <img src="/assets/img/logo-96.webp" width="40" height="40" alt="">
+          <span>One Happy Picnic</span>
+        </a>
+        <div class="nav__links">
+          {NAV.map((item) => <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>)}
+        </div>
+        <a class="btn btn--primary btn--sm nav__cta" href="/book/">Book a picnic</a>
+        <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+          <span></span><span></span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="menu" id="menu" aria-hidden="true">
+      <ul>
+        <li><a class="menu__link" href="/" aria-current={path === '/' ? 'page' : undefined}>Home</a></li>
+        {NAV.map((item) => <li><a class="menu__link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a></li>)}
+      </ul>
+      <div class="menu__foot">
+        <a class="btn btn--primary" href="/book/">Book your picnic <svg class="icon icon-move"><use href="#i-arrow-right"/></svg></a>
+        <a class="btn btn--ghost" href={SITE.instagram} target="_blank" rel="noopener"><svg class="icon"><use href="#i-instagram-logo"/></svg> Instagram</a>
+      </div>
+    </div>
+  </>
+)}
+
+<main id="main">
+  <slot />
+</main>
+
+{!bare && (
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="/assets/img/logo-192.webp" width="64" height="64" alt="One Happy Picnic Aruba logo" loading="lazy">
+          <p>Private beach picnics, proposals and charcuterie boards on One Happy Island.</p>
+        </div>
+        <div>
+          <h2>Picnics</h2>
+          <ul>
+            {EXPERIENCES.map((e) => <li><a href={`/picnics/${e.slug}/`}>{e.name}</a></li>)}
+          </ul>
+        </div>
+        <div>
+          <h2>Company</h2>
+          <ul>
+            <li><a href="/about/">About Zoe</a></li>
+            <li><a href="/reviews/">Reviews</a></li>
+            <li><a href="/faq/">FAQ</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/book/">Book a picnic</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Follow</h2>
+          <ul>
+            <li><a href={SITE.instagram} target="_blank" rel="noopener"><svg class="icon icon-sm"><use href="#i-instagram-logo"/></svg> Instagram</a></li>
+            <li data-wa-item hidden><a href="#" data-wa><svg class="icon icon-sm"><use href="#i-whatsapp-logo"/></svg> WhatsApp</a></li>
+            <li data-phone-item hidden><a href="#" data-call><svg class="icon icon-sm"><use href="#i-l-phone"/></svg> Call us</a></li>
+          </ul>
+          <h2 class="footer__sub">Legal</h2>
+          <ul>
+            <li><a href="/privacy/">Privacy policy</a></li>
+            <li><a href="/terms/">Booking terms</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__base">
+        <span>&copy; <span data-year>2026</span> One Happy Picnic Aruba</span>
+        <span>{SITE.handle}</span>
+      </div>
+    </div>
+  </footer>
+)}
+
+{!bare && (
+  <div class="dock" data-dock hidden>
+    <a class="dock__btn dock__btn--primary" href="#" data-wa hidden><svg class="icon"><use href="#i-whatsapp-logo"/></svg><span>WhatsApp</span></a>
+    <a class="dock__btn" href="#" data-call hidden><svg class="icon"><use href="#i-l-phone"/></svg><span>Call</span></a>
+  </div>
+)}
+
+<dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
+  <button class="lightbox__close" type="button" aria-label="Close photo"><svg class="icon"><use href="#i-x"/></svg></button>
+  <img src="/assets/img/g-golden-table-900.webp" alt="">
+</dialog>
+
+<script is:inline src="/assets/js/main.js" defer></script>
+</body>
+</html>

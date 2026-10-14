@@ -1,0 +1,23 @@
+---
+import { EXPERIENCES, img } from '../data/site.js';
+const { exclude } = Astro.props;
+const items = EXPERIENCES.filter((e) => e.slug !== exclude);
+---
+<section class="section" aria-labelledby="more-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2 class="h2" id="more-title">More picnics</h2>
+    </div>
+    <ul class="mini-cards">
+      {items.map((e, i) => (
+        <li class={`mini-card reveal${['', ' reveal-d1', ' reveal-d2'][i % 3]}`}>
+          <a href={`/picnics/${e.slug}/`}>
+            <img src={img(`${e.card.img}-640.webp`)} width="640" height="480" loading="lazy" alt="">
+            <span>{e.name}</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,94 @@
+---
+import Pill from './Pill.astro';
+import { EXPERIENCES, SITE } from '../data/site.js';
+const { id = 'book', asPageTitle = false } = Astro.props;
+const Heading = asPageTitle ? 'h1' : 'h2';
+---
+<section class={`section section--sand${asPageTitle ? ' section--page-top' : ''}`} id={id} aria-labelledby={`${id}-title`}>
+  <div class="container booking">
+    <div class="booking__aside reveal">
+      <div class="section-head" style="margin-bottom: 0;">
+        <Heading class={asPageTitle ? 'page-hero__title' : 'h2'} id={`${id}-title`}>Request your <Pill file="pill-golden.webp" /> date</Heading>
+        <p class="lead">Send us the date and the occasion. We reply on WhatsApp to confirm availability.</p>
+      </div>
+      <ul class="next-steps">
+        <li><svg class="icon"><use href="#i-check"/></svg><span>We reply with availability for your date and beach.</span></li>
+        <li><svg class="icon"><use href="#i-check"/></svg><span>Choose colors, menu and extras like cake, photographer or marquee letters.</span></li>
+        <li><svg class="icon"><use href="#i-check"/></svg><span>Pay your deposit through a secure link and get the map pin of your spot.</span></li>
+      </ul>
+      <div class="contact-list">
+        <a href="#" data-wa hidden><svg class="icon"><use href="#i-whatsapp-logo"/></svg> Message us on WhatsApp</a>
+        <a href={SITE.instagram} target="_blank" rel="noopener"><svg class="icon"><use href="#i-instagram-logo"/></svg> {SITE.handle}</a>
+        <a href="#" data-email hidden><svg class="icon"><use href="#i-envelope-simple"/></svg> <span data-email-text></span></a>
+      </div>
+    </div>
+
+    <div class="form-card reveal reveal-d1">
+      <form id="booking-form" novalidate>
+        <div class="form-grid">
+          <div class="field field--full">
+            <label for="f-experience">Experience</label>
+            <select class="input" id="f-experience" name="experience" required>
+              {EXPERIENCES.map((e) => <option value={e.booking} data-slug={e.slug}>{e.booking}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-date">Date</label>
+            <input class="input" id="f-date" name="date" type="date" required aria-describedby="f-date-hint f-date-error">
+            <p class="field__error" id="f-date-error" role="alert"></p>
+          </div>
+          <div class="field">
+            <label for="f-guests">Guests</label>
+            <select class="input" id="f-guests" name="guests" required>
+              {['2', '3', '4', '5', '6', '7', '8', '9', '10', '11 or more'].map((g) => <option>{g}</option>)}
+            </select>
+          </div>
+          <p class="field__hint field--full" id="f-date-hint" aria-live="polite"><svg class="icon"><use href="#i-sun-horizon"/></svg> <span data-date-hint>Pick a date to see that day's sunset time in Aruba.</span></p>
+          <fieldset class="field field--full">
+            <legend>Time of day</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="time" value="Golden hour" checked><span><svg class="icon"><use href="#i-sun-horizon"/></svg> Golden hour</span></label>
+              <label class="chip"><input type="radio" name="time" value="Under the stars"><span><svg class="icon"><use href="#i-moon-stars"/></svg> Under the stars</span></label>
+              <label class="chip"><input type="radio" name="time" value="Morning"><span><svg class="icon"><use href="#i-sparkle"/></svg> Morning</span></label>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="f-name">Your name</label>
+            <input class="input" id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error">
+            <p class="field__error" id="f-name-error" role="alert"></p>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="f-email-error">
+            <p class="field__error" id="f-email-error" role="alert"></p>
+          </div>
+          <div class="field field--full">
+            <label for="f-phone">WhatsApp number <span class="opt">(optional)</span></label>
+            <input class="input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+1 312 847 1928">
+          </div>
+          <div class="field field--full">
+            <label for="f-notes">Anything we should know? <span class="opt">(optional)</span></label>
+            <textarea class="input" id="f-notes" name="notes" rows="4" placeholder="The occasion, colors you love, allergies, or the surprise you are planning"></textarea>
+          </div>
+        </div>
+        <div class="form-foot">
+          <button class="btn btn--primary" type="submit"><svg class="icon"><use href="#i-whatsapp-logo"/></svg> Send my request</button>
+          <p>No payment now. We confirm availability first.</p>
+        </div>
+        <p class="form-status" id="form-status" role="alert" hidden></p>
+      </form>
+
+      <div class="success" id="booking-success" hidden tabindex="-1">
+        <span class="success__badge" aria-hidden="true"><svg class="icon"><use href="#i-l-check"/></svg></span>
+        <h3>Your request is ready to send</h3>
+        <p data-success-copy>Send it to us and we will reply with availability for your date.</p>
+        <dl class="summary" id="booking-summary"></dl>
+        <div class="success__actions">
+          <a class="btn btn--primary" id="send-link" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp-logo" data-send-icon/></svg> <span data-send-label>Open WhatsApp</span></a>
+          <button class="btn btn--ghost" type="button" id="copy-message"><svg class="icon"><use href="#i-copy"/></svg> <span>Copy message</span></button>
+          <button class="btn btn--ghost" type="button" id="edit-request">Edit request</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+---
+import Pill from './Pill.astro';
+import { img } from '../data/site.js';
+const { data, id = 'how' } = Astro.props;
+const words = data.title.split(' ');
+const cut = Math.ceil(words.length / 2);
+---
+<section class="section how" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <div class="section-head reveal">
+      <h2 class="h2" id={`${id}-title`}>{words.slice(0, cut).join(' ')} <Pill file={data.pill} /> {words.slice(cut).join(' ')}</h2>
+      {data.live && <p class="lead">The times below follow <span data-how-day>today&rsquo;s</span> sunset in Aruba.</p>}
+    </div>
+    <div class="how__grid">
+      <div class="how__media" aria-hidden="true">
+        <div class="how__frame">
+          {data.steps.map((s, i) => <img src={img(s.img)} alt="" loading="lazy" data-step-img={i} class={i === 0 ? 'is-active' : undefined}>)}
+          <span class="how__clock mono" data-how-clock>{data.steps[0].label}</span>
+        </div>
+      </div>
+      <div class="how__track">
+        <span class="how__rail" aria-hidden="true"><span class="how__fill"></span><span class="how__sun"></span></span>
+        <ol class="how__steps">
+          {data.steps.map((s, i) => (
+            <li class={`how__step${i === 0 ? ' is-active' : ''}`} data-step={i}>
+              <span class="how__time mono" data-time={s.kind}>{s.label}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+              <img class="how__thumb" src={img(s.thumb)} alt={s.alt} loading="lazy">
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

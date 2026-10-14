@@ -1,0 +1,38 @@
+---
+import { img } from '../data/site.js';
+const { crumbs = [], title, intro, facts = [], cta, secondary, image } = Astro.props;
+const sizes = image?.sizes || [640, 1000];
+---
+<header class={`page-hero${image ? '' : ' page-hero--text'}`}>
+  <div class="container page-hero__grid">
+    <div class="page-hero__text">
+      {crumbs.length > 0 && (
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <ol>
+            {crumbs.map((c, i) => <li>{i < crumbs.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>)}
+          </ol>
+        </nav>
+      )}
+      <h1 class="page-hero__title">{title}</h1>
+      {intro && <p class="page-hero__intro">{intro}</p>}
+      {facts.length > 0 && (
+        <dl class="facts">
+          {facts.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+        </dl>
+      )}
+      {(cta || secondary) && (
+        <div class="hero__actions">
+          {cta && <a class="btn btn--primary" href={cta.href}>{cta.label} <svg class="icon icon-move"><use href="#i-arrow-right"/></svg></a>}
+          {secondary && <a class="btn btn--ghost" href={secondary.href}>{secondary.label}</a>}
+        </div>
+      )}
+      <slot />
+    </div>
+    {image && (
+      <figure class="page-hero__media" style={`aspect-ratio: ${image.aspect || '4 / 5'};`}>
+        <img src={img(`${image.img}-${sizes[1]}.webp`)} srcset={sizes.map((s) => `${img(`${image.img}-${s}.webp`)} ${s}w`).join(', ')}
+             sizes="(min-width: 1024px) 520px, 100vw" width={image.w} height={image.h} fetchpriority="high" alt={image.alt}>
+      </figure>
+    )}
+  </div>
+</header>

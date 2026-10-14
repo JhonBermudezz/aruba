@@ -1,0 +1,15 @@
+{
+  "name": "one-happy-picnic-aruba",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "build:preview": "PREVIEW=1 astro build --outDir dist-preview && node scripts/relative-links.mjs dist-preview"
+  },
+  "dependencies": {
+    "astro": "7.3.5"
+  }
+}

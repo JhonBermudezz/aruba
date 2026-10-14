@@ -1,0 +1,37 @@
+---
+import { INCLUDED, img } from '../data/site.js';
+const {
+  id = 'included',
+  heading = 'Everything is ready before you arrive',
+  lead = 'Each picnic includes everything below. Extras like a photographer or a cake cost more.',
+  items = INCLUDED,
+  extras = [],
+  photo = { file: 'included', alt: 'A picnic table at sunset set with gold chargers, pink napkins, flowers and a glowing lantern under a blue flower teepee', caption: 'Table for two', note: 'at golden hour.' },
+} = Astro.props;
+const delay = (i) => (i % 2 ? ' reveal-d1' : '');
+---
+<section class="section" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container split">
+    <figure class="photo-frame reveal" style="aspect-ratio: 4 / 5; margin: 0;">
+      <img src={img(`${photo.file}-640.webp`)} srcset={`${img(`${photo.file}-640.webp`)} 640w, ${img(`${photo.file}-1000.webp`)} 1000w`} sizes="(min-width: 1024px) 460px, 100vw" width="1000" height="1250" loading="lazy" alt={photo.alt}>
+      <figcaption class="photo-note"><svg class="icon"><use href="#i-sun-horizon"/></svg><span><strong>{photo.caption}</strong> {photo.note}</span></figcaption>
+    </figure>
+    <div>
+      <div class="section-head reveal" style="margin-bottom: 0;">
+        <h2 class="h2" id={`${id}-title`}>{heading}</h2>
+        <p class="lead">{lead}</p>
+      </div>
+      <ul class="included-list">
+        {items.map((it, i) => (
+          <li class={`reveal${delay(i)}`}><svg class="feature-icon" aria-hidden="true"><use href={`#i-l-${it.icon}`}/></svg><div><h3>{it.title}</h3><p>{it.text}</p></div></li>
+        ))}
+      </ul>
+      {extras.length > 0 && (
+        <div class="extras reveal">
+          <h3>Add to your picnic</h3>
+          <p>{extras.join(' · ')}</p>
+        </div>
+      )}
+    </div>
+  </div>
+</section>

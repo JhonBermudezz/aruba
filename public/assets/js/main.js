@@ -84,7 +84,37 @@
   if (dock && (CONFIG.whatsapp || CONFIG.phone)) { dock.hidden = false; document.body.classList.add('has-dock'); }
   if (CONFIG.email) {
     $$('[data-email]').forEach((a) => { a.href = `mailto:${CONFIG.email}`; a.hidden = false; });
-    $$('[data-email-text]').forEach((s) => { s.textContent = CONFIG.email; });
+    $$('[data-email-text]').forEach((el) => { el.textContent = CONFIG.email; });
+    $$('[data-email-item]').forEach((li) => { li.hidden = false; });
+  }
+  if (CONFIG.phone) $$('[data-phone-text]').forEach((el) => { el.textContent = `+${CONFIG.phone}`; });
+
+  // Where a composed message goes: WhatsApp when configured, otherwise Instagram chat.
+  function wireSendLink(link, message) {
+    const icon = $('[data-send-icon]', link);
+    const label = $('[data-send-label]', link);
+    if (CONFIG.whatsapp) {
+      link.href = waLink(message);
+      if (icon) icon.setAttribute('href', '#i-whatsapp-logo');
+      if (label) label.textContent = 'Open WhatsApp';
+      window.open(link.href, '_blank', 'noopener');
+    } else {
+      link.href = igDm;
+      if (icon) icon.setAttribute('href', '#i-instagram-logo');
+      if (label) label.textContent = 'Send on Instagram';
+    }
+  }
+  function copyText(text, labelEl, reset) {
+    const done = (msg) => { labelEl.textContent = msg; setTimeout(() => { labelEl.textContent = reset; }, 2400); };
+    const fallback = () => {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+      ta.remove(); done(ok ? 'Copied' : 'Copy failed. Select the text instead.');
+    };
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(() => done('Copied'), fallback);
+    else fallback();
   }
 
   /* ---------- Mobile menu with morphing burger ---------- */
@@ -102,22 +132,6 @@
   $$('a', menu).forEach((a) => a.addEventListener('click', () => setMenu(false)));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.classList.contains('is-open')) { setMenu(false); burger.focus(); } });
   window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
-
-  /* ---------- Current section in the nav ---------- */
-  const navLinks = $$('.nav__links a');
-  const sections = navLinks.map((a) => $(a.getAttribute('href'))).filter(Boolean);
-  if ('IntersectionObserver' in window && sections.length) {
-    const current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        navLinks.forEach((a) => {
-          if (a.getAttribute('href') === `#${entry.target.id}`) a.setAttribute('aria-current', 'true');
-          else a.removeAttribute('aria-current');
-        });
-      });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    sections.forEach((s) => current.observe(s));
-  }
 
   /* ---------- Scroll reveal ---------- */
   const revealEls = $$('.reveal');
@@ -173,13 +187,13 @@
     }
   }
 
-  /* ---------- How it works: timeline synced to the day's sunset ---------- */
-  const how = $('.how');
-  if (how) {
-    const S = sunsetHour(sunsetDay.y, sunsetDay.m, sunsetDay.d);
-    const start = roundQuarter(S - 1.75);
-    const times = { today: 'Today', sameday: 'Same day', start: fmtHour(start), sunset: fmtHour(S), end: fmtHour(start + 2) };
-    $$('[data-time]', how).forEach((el) => { el.textContent = times[el.dataset.time] || el.textContent; });
+  /* ---------- How it works: timelines synced to the day's sunset ---------- */
+  const S = sunsetHour(sunsetDay.y, sunsetDay.m, sunsetDay.d);
+  const start = roundQuarter(S - 1.75);
+  const nightStart = roundQuarter(S + 0.5);
+  const times = { today: 'Today', sameday: 'Same day', start: fmtHour(start), sunset: fmtHour(S), end: fmtHour(start + 2), nstart: fmtHour(nightStart), nend: fmtHour(nightStart + 2) };
+  $$('.how').forEach((how) => {
+    $$('[data-time]', how).forEach((el) => { if (times[el.dataset.time]) el.textContent = times[el.dataset.time]; });
     const dayLabel = $('[data-how-day]', how);
     if (dayLabel && sunsetDay.tomorrow) dayLabel.textContent = 'tomorrow’s';
 
@@ -194,26 +208,25 @@
       if (clock) clock.textContent = $('.how__time', steps[i]).textContent;
     };
     setActive(0);
-    if ('IntersectionObserver' in window) {
-      const stepWatch = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => { if (entry.isIntersecting) setActive(Number(entry.target.dataset.step)); });
-      }, { rootMargin: '-48% 0px -48% 0px' });
-      steps.forEach((st) => stepWatch.observe(st));
+    if (!('IntersectionObserver' in window)) return;
+    const stepWatch = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => { if (entry.isIntersecting) setActive(Number(entry.target.dataset.step)); });
+    }, { rootMargin: '-48% 0px -48% 0px' });
+    steps.forEach((st) => stepWatch.observe(st));
 
-      let ticking = false;
-      const paintRail = () => {
-        ticking = false;
-        const r = list.getBoundingClientRect();
-        const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / r.height));
-        rail.style.setProperty('--p', p.toFixed(4));
-      };
-      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(paintRail); } };
-      new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) { window.addEventListener('scroll', onScroll, { passive: true }); paintRail(); }
-        else { window.removeEventListener('scroll', onScroll); paintRail(); }
-      }).observe(list);
-    }
-  }
+    let ticking = false;
+    const paintRail = () => {
+      ticking = false;
+      const r = list.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / r.height));
+      rail.style.setProperty('--p', p.toFixed(4));
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(paintRail); } };
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { window.addEventListener('scroll', onScroll, { passive: true }); paintRail(); }
+      else { window.removeEventListener('scroll', onScroll); paintRail(); }
+    }).observe(list);
+  });
 
   /* ---------- Gallery lightbox ---------- */
   const lightbox = $('#lightbox');
@@ -228,6 +241,54 @@
     lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.close(); });
   }
 
+  /* ---------- Contact and review forms: compose a message to send ---------- */
+  const MAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  $$('form[data-compose]').forEach((cform) => {
+    const done = cform.nextElementSibling;
+    const status = $('.form-status', cform);
+    let message = '';
+    const check = (input) => {
+      const v = input.value.trim();
+      let msg = '';
+      if (input.required && !v) msg = input.type === 'email' ? 'Enter your email address.' : `Fill in ${(input.dataset.label || 'this field').toLowerCase()}.`;
+      else if (input.type === 'email' && v && !MAIL_RE.test(v)) msg = 'Check your email address, it looks incomplete.';
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      const err = $(`#${input.id}-error`);
+      if (err) err.textContent = msg;
+      return !msg;
+    };
+    const required = $$('[required]', cform);
+    required.forEach((input) => {
+      input.addEventListener('blur', () => { if (input.value || input.getAttribute('aria-invalid') === 'true') check(input); });
+      input.addEventListener('input', () => { if (input.getAttribute('aria-invalid') === 'true') check(input); });
+    });
+    cform.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (required.map(check).includes(false)) {
+        status.textContent = 'Some details are missing. Check the highlighted fields.';
+        status.hidden = false;
+        $('[aria-invalid="true"]', cform)?.focus();
+        return;
+      }
+      status.hidden = true;
+      const lines = [];
+      $$('[data-label]', cform).forEach((el) => {
+        if ((el.type === 'radio' || el.type === 'checkbox') && !el.checked) return;
+        const v = el.value.trim();
+        if (v) lines.push(`${el.dataset.label}: ${v}`);
+      });
+      message = [cform.dataset.intro, '', ...lines].join('\n');
+      const copy = $('[data-success-copy]', done);
+      if (copy && !CONFIG.whatsapp) copy.textContent = `Copy your ${cform.dataset.subject || 'message'}, then paste it in our Instagram chat.`;
+      wireSendLink($('[data-send-link]', done), message);
+      cform.hidden = true; done.hidden = false;
+      done.focus({ preventScroll: true });
+      done.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+    });
+    $('[data-copy]', done)?.addEventListener('click', (e) => { const label = $('span', e.currentTarget); copyText(message, label, label.textContent); });
+    $('[data-edit]', done)?.addEventListener('click', () => { done.hidden = true; cform.hidden = false; $('input, select, textarea', cform)?.focus(); });
+  });
+
   /* ---------- Booking form ---------- */
   const form = $('#booking-form');
   if (!form) return;
@@ -236,6 +297,13 @@
   const dateHint = $('[data-date-hint]');
   const minDay = addDays(arubaNow(), 1);
   fields.date.min = isoDate(minDay);
+  const preselect = () => {
+    const slug = decodeURIComponent(location.hash.slice(1));
+    const option = $$('option', fields.experience).find((o) => o.dataset.slug === slug);
+    if (option) fields.experience.value = option.value;
+  };
+  preselect();
+  window.addEventListener('hashchange', preselect);
 
   $$('[data-experience]').forEach((a) => a.addEventListener('click', () => { fields.experience.value = a.dataset.experience; }));
 

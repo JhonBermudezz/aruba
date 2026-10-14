@@ -1,0 +1,13 @@
+---
+import { img } from '../data/site.js';
+const { href = '/book/', title = 'Pick a date and we will set the table', text = 'Sunset picnics start at $99 per person, with setup and cleanup included.', label = 'Book your picnic' } = Astro.props;
+---
+<section class="final" aria-labelledby="final-title">
+  <div class="final__bg"><img src={img('cta-sunset-960.webp')} srcset={`${img('cta-sunset-960.webp')} 960w, ${img('cta-sunset-1440.webp')} 1440w`} sizes="100vw" width="1440" height="810" loading="lazy" alt=""></div>
+  <div class="container final__inner">
+    <p class="final__sun reveal" data-final-sunset>Tonight's sunset in Aruba: 6:22 PM</p>
+    <h2 id="final-title" class="reveal">{title}</h2>
+    <p class="reveal">{text}</p>
+    <a class="btn btn--light reveal" href={href}>{label} <svg class="icon icon-move"><use href="#i-arrow-right"/></svg></a>
+  </div>
+</section>

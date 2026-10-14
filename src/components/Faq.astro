@@ -1,0 +1,21 @@
+---
+import { FAQS } from '../data/site.js';
+const { keys, heading = 'Good to know before you book', lead = 'Message us on Instagram or WhatsApp if your question is not here.', more = true, id = 'faq' } = Astro.props;
+---
+<section class="section" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container faq-layout">
+    <div class="section-head reveal">
+      <h2 class="h2" id={`${id}-title`}>{heading}</h2>
+      <p class="lead">{lead}</p>
+      {more && <a class="text-link" href="/faq/">See all questions <svg class="icon"><use href="#i-arrow-right"/></svg></a>}
+    </div>
+    <div class="faq reveal">
+      {keys.map((k) => (
+        <details>
+          <summary>{FAQS[k].q} <svg class="icon"><use href="#i-plus"/></svg></summary>
+          <div class="faq__answer">{FAQS[k].a.map((p) => <p>{p}</p>)}</div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

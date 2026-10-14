@@ -6,7 +6,7 @@
 | **Proveedor** | JhonDev |
 | **Plan contratado** | Plan 2, Recomendado: **USD 500**, pago único |
 | **Entrega** | 4 semanas (hasta 8 si el contenido se demora) |
-| **Estado** | Diseño v2 de la página de inicio listo para aprobación. Lo demás del plan está planeado abajo |
+| **Estado** | Sitio en inglés con 16 páginas, ya migrado a Astro. Faltan el español, el blog, el calendario y el pago |
 | **Actualizado** | 14 de octubre de 2026 |
 
 ---
@@ -28,7 +28,7 @@
 | Botón directo a WhatsApp | Barra fija abajo en el celular y botón flotante en escritorio | ✅ Hecho (aparece al poner el número) |
 | Botón de llamada rápida | En la misma barra fija, junto a WhatsApp | ✅ Hecho (aparece al poner el número) |
 | Identidad visual aplicada | Colores del logo, tipografía Manrope y fotos reales | ✅ Hecho |
-| Páginas: Inicio, Paquetes/Servicios, Sobre nosotros, Contacto | Inicio hecho. Las demás reutilizan las mismas piezas | 🟡 Inicio listo, faltan 3 |
+| Páginas: Inicio, Paquetes/Servicios, Sobre nosotros, Contacto | Inicio, índice de picnics, **una página por tipo de picnic (6)**, Sobre nosotros, Reseñas (con formulario), FAQ, Contacto y Reservar | ✅ Hecho (inglés) |
 | Sección de blog lista para publicar | Blog con listado, artículo y panel para que Zoe publique sin código | ⏳ Semana 2 y 3 |
 | Carga inicial de 4 blogs SEO (E-E-A-T) | Los escribimos en inglés y español (sección 7) | ⏳ Semana 3 |
 | Sitio multidioma: inglés + español | Rutas separadas `/` y `/es/`, con selector de idioma y `hreflang` para Google | ⏳ Semana 2 y 3 |
@@ -99,7 +99,7 @@ La sección "How it works" de la página ya cuenta este flujo, con los horarios 
 
 ## 6. Arquitectura técnica recomendada
 
-Hoy el sitio es HTML, CSS y JS puros, ideal para una sola página. Con dos idiomas, cinco páginas y un blog, mantener archivos duplicados a mano se vuelve frágil. **Recomiendo migrar a [Astro](https://astro.build):**
+**Ya migrado a [Astro](https://astro.build)** (v3). Con dos idiomas, 16 páginas y un blog, mantener archivos duplicados a mano se vuelve frágil, por eso se hizo el cambio:
 
 - Genera un sitio **estático** igual de rápido que el actual y se aloja gratis (Netlify o Cloudflare Pages).
 - Trae **rutas por idioma** (`/` y `/es/`), así que cada página existe en los dos idiomas con su URL propia. Google indexa ambas versiones y el `hreflang` le dice cuál mostrar a cada visitante.
@@ -108,17 +108,29 @@ Hoy el sitio es HTML, CSS y JS puros, ideal para una sola página. Con dos idiom
 
 **Mapa del sitio:**
 
-| Inglés | Español | Contenido |
-|---|---|---|
-| `/` | `/es/` | Inicio (la landing actual) |
-| `/packages` | `/es/paquetes` | Paquetes con precios, qué incluye cada uno, extras y FAQ de precios |
-| `/about` | `/es/nosotros` | Historia de Zoe (empezó con tablas de charcutería), fotos y valores |
-| `/contact` | `/es/contacto` | WhatsApp, llamada, Instagram, formulario y mapa de playas |
-| `/book` | `/es/reservar` | Calendario de Google + abono |
-| `/blog` y `/blog/[artículo]` | `/es/blog` y `/es/blog/[artículo]` | Blog |
-| `/privacy`, `/terms` | `/es/privacidad`, `/es/terminos` | Legales |
+| Inglés | Español | Contenido | Estado |
+|---|---|---|---|
+| `/` | `/es/` | Inicio (la landing) | ✅ |
+| `/picnics/` | `/es/picnics/` | Índice con las 6 experiencias | ✅ |
+| `/picnics/sunset-picnic/` | `/es/picnics/picnic-al-atardecer/` | Sunset picnic | ✅ |
+| `/picnics/moonlight-picnic/` | `/es/picnics/picnic-a-la-luz-de-la-luna/` | Moonlight picnic | ✅ |
+| `/picnics/proposal-setup/` | `/es/picnics/propuesta-de-matrimonio/` | Propuestas | ✅ |
+| `/picnics/birthday-anniversary-picnic/` | `/es/picnics/cumpleanos-y-aniversarios/` | Cumpleaños y aniversarios | ✅ |
+| `/picnics/group-bachelorette-picnic/` | `/es/picnics/grupos-y-despedidas/` | Grupos y despedidas | ✅ |
+| `/picnics/charcuterie-boards/` | `/es/picnics/tablas-de-charcuteria/` | Tablas de charcutería | ✅ |
+| `/about/` | `/es/nosotros/` | Historia de Zoe, compromisos con reseñas, fotos | ✅ |
+| `/reviews/` | `/es/resenas/` | Las 4 reseñas completas + **formulario para dejar reseña** | ✅ |
+| `/faq/` | `/es/preguntas/` | 24 preguntas en 6 grupos | ✅ |
+| `/contact/` | `/es/contacto/` | Canales, formulario, playas con mapa | ✅ |
+| `/book/` | `/es/reservar/` | Formulario de reserva (luego Google Calendar + abono) | ✅ / ⏳ calendario |
+| `/blog/` y `/blog/[artículo]/` | `/es/blog/...` | Blog | ⏳ |
+| `/privacy/`, `/terms/` | `/es/privacidad/`, `/es/terminos/` | Legales | ✅ |
 
-> **Decisión para Jhon:** ¿Astro + Decap CMS o prefieres otro stack (WordPress, Next.js)? Todo el plan funciona con cualquiera. Astro es lo más liviano y lo más rápido de entregar.
+**Cómo está hecho cada página de picnic (SEO):** título y descripción propios con la palabra clave ("Proposal setup in Aruba with MARRY ME letters"), H1 único, migas de pan, datos estructurados `Service` + `BreadcrumbList` + `FAQPage`, fotos reales de esa categoría, reseñas, preguntas propias y enlaces a las otras 5 (enlazado interno). El botón "Book this picnic" llega al formulario con la experiencia ya elegida.
+
+**Todo el contenido vive en `src/data/site.js`:** experiencias, reseñas, preguntas, fotos y líneas de tiempo. Para la versión en español se traduce ese archivo.
+
+> **Pendiente:** el panel para que Zoe publique el blog (Decap CMS o Keystatic) se agrega junto con el blog.
 
 ---
 
@@ -193,7 +205,7 @@ Cada artículo lleva fotos reales, enlaces a Paquetes y Reservar, datos estructu
 | Semana | Entregable | Depende de |
 |---|---|---|
 | **1** | Diseño de inicio aprobado (v2) y recolección de contenido | Aprobación de Jhon y Zoe ✅ / contenido |
-| **2** | Migración a Astro, páginas Paquetes, Sobre nosotros y Contacto, estructura bilingüe, barra de WhatsApp y llamada activa | Números, precios, logo |
+| **2** | ✅ Migración a Astro y todas las páginas en inglés (adelantado). Falta: estructura bilingüe y activar la barra de WhatsApp y llamada | Números, precios, logo |
 | **3** | Reservas: Google Calendar embebido y link de abono. Blog con panel de edición y los 4 artículos en EN y ES | Cuenta de Google, pasarela de pago |
 | **4** | QA en celulares reales, SEO técnico (Search Console, sitemap, `hreflang`), dominio, lanzamiento y una sesión con Zoe para enseñarle a publicar en el blog y ajustar horarios | Dominio |
 
@@ -259,13 +271,16 @@ Créditos usados: 108 de 494 (quedan 386).
 
 ---
 
-## 15. Cómo ver el sitio
+## 15. Cómo ver y publicar el sitio
 
 ```bash
-python3 -m http.server 8000   # http://localhost:8000
+npm install
+npm run dev            # http://localhost:4321, con recarga en vivo
+npm run build          # genera dist/ para subir a Netlify, Vercel o Cloudflare Pages
+npm run build:preview  # versión con enlaces relativos para la vista previa privada
 ```
 
-Para activar WhatsApp, la llamada y el email, se llena `CONFIG` al inicio de `assets/js/main.js`:
+Para activar WhatsApp, la llamada y el email, se llena `CONFIG` al inicio de `public/assets/js/main.js`:
 ```js
 const CONFIG = {
   whatsapp: '2975551234', // código de país + número, solo dígitos

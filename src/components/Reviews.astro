@@ -1,0 +1,28 @@
+---
+import Pill from './Pill.astro';
+import Stars from './Stars.astro';
+import { REVIEWS } from '../data/site.js';
+const { keys = ['susan', 'tatyana', 'krizia', 'taylor'], before = 'From our', after = 'Facebook reviews', pill = 'pill-kiss.webp', long = false, more = true, id = 'reviews', tone = 'sand' } = Astro.props;
+const items = keys.map((k) => ({ key: k, ...REVIEWS[k] }));
+---
+<section class={`section section--${tone}`} id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <div class="gallery-head">
+      <div class="section-head reveal">
+        <h2 class="h2" id={`${id}-title`}>{before} <Pill file={pill} /> {after}</h2>
+      </div>
+      {more && <a class="btn btn--ghost reveal" href="/reviews/">Read all reviews <svg class="icon icon-move"><use href="#i-arrow-right"/></svg></a>}
+    </div>
+    <div class={`reviews reviews--${items.length}`}>
+      {items.map((r, i) => (
+        <figure class={`review${i === 0 ? ' review--feature' : ''} reveal${i % 2 ? ' reveal-d1' : ''}`} style="margin:0;">
+          <Stars />
+          <blockquote>{long && r.long ? r.long : r.text}</blockquote>
+          <figcaption class="review__foot">
+            <span class="person"><span class="person__text"><strong>{r.name}</strong><span>{r.context}</span></span></span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
