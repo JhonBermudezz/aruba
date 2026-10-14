@@ -142,7 +142,9 @@ Cada artículo lleva fotos reales, enlaces a Paquetes y Reservar, datos estructu
 | "La foto del hero tiene un recorte raro en el mar" | Volví a la imagen que te gustó (`hero35_preview`). Para que el panel no tape el teepee, agregué arena a la izquierda y pegué encima los píxeles originales, así que no hay costura |
 | "Los iconos con esos colores se ven muy IA" | Iconos de línea fina en un solo color (tinta), sin círculos de colores. En "What's included" quedan separados por líneas finas |
 | "Los tres pasos de cómo trabajamos no me gustan, más dinámico" | "How it works" ahora es una **línea de tiempo** que avanza con el scroll: la foto cambia en cada paso, un sol recorre la línea y las horas se calculan con el atardecer real del día (ej. 4:30 PM llegas, 6:22 PM brindis, 6:30 PM recogemos) |
-| "La estrellita que dice BOOK, GALLERY no me gusta" | Quité todas las etiquetas con estrella. Algunos títulos llevan una **mini foto en forma de píldora** que se abre al hacer scroll ("Pick your [foto] moment"). El hero y el cierre llevan un chip con un punto de sol que late |
+| "La estrellita que dice BOOK, GALLERY no me gusta" | Quité todas las etiquetas con estrella. Algunos títulos llevan una **mini foto en forma de píldora** que se abre al hacer scroll ("Pick your [foto] moment") |
+| Revisión anti-IA (v3): "los punticos se ven muy IA" | Quité todos los puntos animados, la etiqueta tipo píldora del hero, el texto con degradado en los títulos, los círculos de colores con iniciales en las reseñas, los chips con iconos de las tarjetas y las etiquetas repetidas. Reescribí los textos con las reglas de *stop-slop*: sin adverbios de relleno, sin listas de tres por costumbre, sin frases tipo eslogan ni "no X, no Y". Ahora el texto nombra a Zoe y a las playas reales |
+| "Las fotos de la galería estilo Polaroid" | La galería son Polaroids: marco blanco con borde inferior más ancho, pie de foto corto, leve inclinación y fondo laguna para que resalten. Al pasar el mouse se enderezan |
 | Plan 2: botones de WhatsApp y llamada siempre visibles | Barra fija abajo en el celular y botón flotante en escritorio. Aparecen solos al poner los números en `CONFIG` |
 
 ---
@@ -237,6 +239,8 @@ Viajeros de EE. UU. (el mercado #1 de Aruba): parejas, propuestas, viajes de ami
 - **Tipografía:** Manrope (400 a 700). Geist Mono solo para horas y números.
 - **Iconos:** Phosphor en peso *light*, un solo color.
 - **Movimiento:** entradas suaves con el scroll, títulos con mini foto que se abre, frase que se ilumina palabra por palabra y línea de tiempo con el sol. Respeta "reducir movimiento".
+- **Galería:** fotos tipo Polaroid con pie de foto.
+- **Anti-IA:** títulos en color sólido, sin puntos animados, sin badges ni avatares de colores.
 
 ---
 
