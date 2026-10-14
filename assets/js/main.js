@@ -5,6 +5,7 @@
   // Contact settings. Fill these in to switch the booking flow to WhatsApp and show the email.
   const CONFIG = {
     whatsapp: '',            // digits only with country code, for example '2975551234'
+    phone: '',               // digits only with country code, for the call button
     email: '',               // for example 'hello@onehappypicnicaruba.com'
     instagram: 'onehappypicnic.aruba',
   };
@@ -50,17 +51,22 @@
   const isoDate = ({ y, m, d }) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
   const fmtDate = ({ y, m, d }, opts) => new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', ...opts }).format(new Date(Date.UTC(y, m - 1, d)));
 
-  (function paintSunset() {
+  // After sunset in Aruba, every live time on the page switches to tomorrow's sunset.
+  const sunsetDay = (() => {
     const now = arubaNow();
-    let day = now; let todayLabel = 'Sunset today'; let finalLabel = 'Tonight’s sunset in Aruba';
-    if (now.h > sunsetHour(now.y, now.m, now.d) + 0.5) {
-      day = addDays(now, 1); todayLabel = 'Sunset tomorrow'; finalLabel = 'Tomorrow’s sunset in Aruba';
-    }
+    const late = now.h > sunsetHour(now.y, now.m, now.d) + 0.5;
+    return { ...(late ? addDays(now, 1) : now), tomorrow: late, year: now.y };
+  })();
+
+  (function paintSunset() {
+    const day = sunsetDay;
+    const todayLabel = day.tomorrow ? 'Sunset tomorrow' : 'Sunset today';
+    const finalLabel = day.tomorrow ? 'Tomorrow’s sunset in Aruba' : 'Tonight’s sunset in Aruba';
     const time = fmtHour(sunsetHour(day.y, day.m, day.d));
     $$('[data-sunset-today]').forEach((el) => { el.textContent = time; });
     $$('[data-sunset-label]').forEach((el) => { el.textContent = todayLabel; });
     $$('[data-final-sunset]').forEach((el) => { el.textContent = `${finalLabel}: ${time}`; });
-    $$('[data-year]').forEach((el) => { el.textContent = String(now.y); });
+    $$('[data-year]').forEach((el) => { el.textContent = String(day.year); });
   })();
 
   /* ---------- Contact links ---------- */
@@ -70,6 +76,12 @@
     $$('[data-wa]').forEach((a) => { a.href = waLink('Hi One Happy Picnic, I have a question about a picnic.'); a.target = '_blank'; a.rel = 'noopener'; a.hidden = false; });
     $$('[data-wa-item]').forEach((li) => { li.hidden = false; });
   }
+  if (CONFIG.phone) {
+    $$('[data-call]').forEach((a) => { a.href = `tel:+${CONFIG.phone}`; a.hidden = false; });
+    $$('[data-phone-item]').forEach((li) => { li.hidden = false; });
+  }
+  const dock = $('[data-dock]');
+  if (dock && (CONFIG.whatsapp || CONFIG.phone)) { dock.hidden = false; document.body.classList.add('has-dock'); }
   if (CONFIG.email) {
     $$('[data-email]').forEach((a) => { a.href = `mailto:${CONFIG.email}`; a.hidden = false; });
     $$('[data-email-text]').forEach((s) => { s.textContent = CONFIG.email; });
@@ -158,6 +170,48 @@
         else { window.removeEventListener('scroll', onScroll); update(); }
       });
       watch.observe(tagline);
+    }
+  }
+
+  /* ---------- How it works: timeline synced to the day's sunset ---------- */
+  const how = $('.how');
+  if (how) {
+    const S = sunsetHour(sunsetDay.y, sunsetDay.m, sunsetDay.d);
+    const start = roundQuarter(S - 1.75);
+    const times = { today: 'Today', sameday: 'Same day', start: fmtHour(start), sunset: fmtHour(S), end: fmtHour(start + 2) };
+    $$('[data-time]', how).forEach((el) => { el.textContent = times[el.dataset.time] || el.textContent; });
+    const dayLabel = $('[data-how-day]', how);
+    if (dayLabel && sunsetDay.tomorrow) dayLabel.textContent = 'tomorrow’s';
+
+    const steps = $$('.how__step', how);
+    const frames = $$('.how__frame img', how);
+    const clock = $('[data-how-clock]', how);
+    const rail = $('.how__rail', how);
+    const list = $('.how__steps', how);
+    const setActive = (i) => {
+      steps.forEach((st, j) => { st.classList.toggle('is-active', j === i); st.classList.toggle('is-passed', j < i); });
+      frames.forEach((img, j) => img.classList.toggle('is-active', j === i));
+      if (clock) clock.textContent = $('.how__time', steps[i]).textContent;
+    };
+    setActive(0);
+    if ('IntersectionObserver' in window) {
+      const stepWatch = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => { if (entry.isIntersecting) setActive(Number(entry.target.dataset.step)); });
+      }, { rootMargin: '-48% 0px -48% 0px' });
+      steps.forEach((st) => stepWatch.observe(st));
+
+      let ticking = false;
+      const paintRail = () => {
+        ticking = false;
+        const r = list.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / r.height));
+        rail.style.setProperty('--p', p.toFixed(4));
+      };
+      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(paintRail); } };
+      new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) { window.addEventListener('scroll', onScroll, { passive: true }); paintRail(); }
+        else { window.removeEventListener('scroll', onScroll); paintRail(); }
+      }).observe(list);
     }
   }
 

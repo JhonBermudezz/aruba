@@ -1,178 +1,170 @@
 # Planeación: sitio web de One Happy Picnic Aruba
 
-**Fecha:** 14 de octubre de 2026
-**Estado:** propuesta v1 construida (sitio en inglés, una sola página, más privacidad, términos y 404). Faltan los datos reales del cliente para publicar.
+| | |
+|---|---|
+| **Cliente** | Zoe, One Happy Picnic Aruba (@onehappypicnic.aruba) |
+| **Proveedor** | JhonDev |
+| **Plan contratado** | Plan 2, Recomendado: **USD 500**, pago único |
+| **Entrega** | 4 semanas (hasta 8 si el contenido se demora) |
+| **Estado** | Diseño v2 de la página de inicio listo para aprobación. Lo demás del plan está planeado abajo |
+| **Actualizado** | 14 de octubre de 2026 |
 
 ---
 
 ## 1. Resumen
 
-Construí una landing page en inglés para **One Happy Picnic Aruba** (@onehappypicnic.aruba). La meta es una sola: **que el visitante pida su fecha**. Toda la página empuja a ese botón.
-
-- **Promesa:** "Sunset picnics on the sand, styled before you arrive". Tú llegas, nosotros ya montamos todo.
-- **Conversión:** un formulario que arma el mensaje de reserva y lo abre en WhatsApp (por ahora en Instagram DM, porque no tengo el número).
-- **Diferencial visible:** la hora del atardecer en Aruba se calcula en vivo (hero, formulario y cierre). Al elegir una fecha, el formulario dice a qué hora es el sunset ese día y a qué hora empezaría el picnic.
-- **Pendiente para salir en vivo:** número de WhatsApp, precios reales, logo original, fotos en alta y dominio (lista completa en la sección 9).
+- **Ya construido:** la página de inicio en inglés (diseño v2 con los ajustes pedidos), privacidad, términos y 404, y la vista previa privada.
+- **Lo que falta del Plan 2:** versión en español, páginas de Paquetes, Sobre nosotros, Contacto y Blog, los 4 blogs SEO, el agendamiento con Google Calendar y el link de pago por reserva.
+- **Hallazgo importante:** Google Calendar puede cobrar al reservar, pero solo con **Stripe**, y **Stripe no acepta negocios con sede en Aruba**. Por eso el cobro va con un link aparte, que es justo lo que promete el PDF ("link de pago dinámico"). Detalle en la sección 4.
+- **Decisiones que necesitamos de Zoe:** en qué banco tiene la cuenta (para elegir pasarela), su cuenta de Google para el calendario, el porcentaje del abono y los precios (sección 9).
 
 ---
 
-## 2. Lo que encontré
+## 2. Alcance del Plan 2 y cómo lo resolvemos
 
-### Instagram (60 imágenes analizadas)
+| Lo que dice el PDF | Cómo lo hacemos | Estado |
+|---|---|---|
+| Diseño 100% responsive | Móvil primero, probado en celular, tablet y escritorio | ✅ Hecho |
+| Botón directo a WhatsApp | Barra fija abajo en el celular y botón flotante en escritorio | ✅ Hecho (aparece al poner el número) |
+| Botón de llamada rápida | En la misma barra fija, junto a WhatsApp | ✅ Hecho (aparece al poner el número) |
+| Identidad visual aplicada | Colores del logo, tipografía Manrope y fotos reales | ✅ Hecho |
+| Páginas: Inicio, Paquetes/Servicios, Sobre nosotros, Contacto | Inicio hecho. Las demás reutilizan las mismas piezas | 🟡 Inicio listo, faltan 3 |
+| Sección de blog lista para publicar | Blog con listado, artículo y panel para que Zoe publique sin código | ⏳ Semana 2 y 3 |
+| Carga inicial de 4 blogs SEO (E-E-A-T) | Los escribimos en inglés y español (sección 7) | ⏳ Semana 3 |
+| Sitio multidioma: inglés + español | Rutas separadas `/` y `/es/`, con selector de idioma y `hreflang` para Google | ⏳ Semana 2 y 3 |
+| Agendamiento por enlace de Google Calendar | Página de reservas de Google Calendar embebida en la web (sección 3) | ⏳ Semana 3, necesita la cuenta de Zoe |
+| Link de pago dinámico por reserva | La web calcula el abono y genera el link de pago (sección 4) | ⏳ Semana 3, necesita la pasarela |
 
-| Lo que hay | Cómo lo usé |
+---
+
+## 3. Google Calendar: cómo lo hacemos
+
+**Qué es:** Google Calendar tiene "Agendas de citas" (*appointment schedules*). Zoe crea una agenda, define horarios y duración, y Google genera una página de reservas. Esa página se **embebe dentro de nuestra web** y el cliente elige día y hora sin salir del sitio.
+
+**Lo que resuelve solo:**
+- El cliente ve solo los horarios libres, así que no hay dobles reservas.
+- La reserva entra directo al calendario de Zoe.
+- Google manda el correo de confirmación al cliente y a Zoe.
+
+**Cómo lo configuramos para picnics:**
+1. Una agenda llamada "Beach picnic", de **2 horas**.
+2. Horarios por temporada que siguen al atardecer, porque el sunset en Aruba va de 6:15 PM (diciembre) a 7:10 PM (junio). Por ejemplo, de octubre a marzo a las 4:15 PM y de abril a septiembre a las 5:00 PM, más un horario nocturno. **Hay que ajustarlo con Zoe.**
+3. Las preguntas del formulario de Google piden experiencia, invitados y ocasión.
+
+**Cuenta gratis o de pago:**
+
+| | Cuenta Google gratis | Google One Premium o Workspace Individual |
+|---|---|---|
+| Páginas de reserva | 1 | Ilimitadas (una por experiencia) |
+| Recordatorios por email | No | Sí |
+| Revisar varios calendarios a la vez | No | Sí |
+| Cobro con Stripe | No | Sí, pero **no sirve en Aruba** |
+
+**Recomendación:** empezar con la cuenta gratis y una sola agenda. Si Zoe quiere una agenda por experiencia o recordatorios automáticos, se sube a Google One Premium (pago mensual que cubre ella).
+
+**Importante:** la página de reservas de Google **no se puede rediseñar**. Va dentro de un marco limpio con nuestra marca alrededor.
+
+---
+
+## 4. Link de pago del abono: cómo lo hacemos
+
+**Por qué no se cobra dentro de Google Calendar:** Google solo cobra con Stripe, y Stripe no acepta negocios de Aruba, Curazao ni Sint Maarten.
+
+**Opciones reales para Aruba:**
+
+| Opción | Cómo cobra | Sirve para turistas | Costos conocidos | Comentario |
+|---|---|---|---|---|
+| **CX Pay** (pasarela de Aruba Bank) | Página de pago con tarjeta: Visa, Mastercard, Amex, Discover | ✅ Sí | USD 50 de activación + USD 75 por la página de pago (tarifas desde junio 2026) | Es la "pasarela de tu banco" que menciona el PDF. Hay que confirmar con ellos si el monto se puede pasar por link (o API) para hacerlo dinámico |
+| **PayPal Business** | Link `paypal.me/usuario/monto`, con tarjeta o cuenta PayPal | ✅ Sí | Comisión por transacción (más alta) | El monto va en el link, así que es dinámico sin servidor. Hay que confirmar que la cuenta de Aruba pueda recibir y retirar |
+| **Sentoo** (Aruba Bank y otros) | Transferencia de banco a banco con link o QR | ❌ Solo clientes de bancos locales | Máx. 1% (tope USD 1.50), sin mensualidad | Muy barato. Útil para residentes que celebran cumpleaños |
+
+**Recomendación:** si Zoe tiene cuenta en **Aruba Bank**, usar **CX Pay** para tarjetas y Sentoo para locales. Si no, o mientras se activa, **PayPal** como opción rápida.
+
+**Cómo es "dinámico":** en la web, el cliente elige experiencia e invitados y la página calcula el abono. Por ejemplo, Sunset × 2 personas × 50% = USD 99. El botón "Pay deposit" abre el link con **ese monto exacto**. Con PayPal es directo. Con CX Pay depende de lo que permita su API: si no deja pasar el monto, usamos un link fijo por paquete.
+
+**Conciliación:** en el Plan 2, Zoe ve la reserva en su calendario y el pago en su banco o PayPal, y confirma por WhatsApp. Cruzar las dos cosas automáticamente es parte del Plan 3 (checkout integrado y mini CRM).
+
+---
+
+## 5. Nuevo flujo de reserva (Plan 2)
+
+1. **Choose:** el cliente elige la experiencia y los invitados y ve el precio y el abono.
+2. **Pick a time:** elige día y hora en el calendario de Google, embebido en la web. La hora del atardecer de esa fecha sigue visible como ayuda.
+3. **Pay deposit:** paga el abono con el link (tarjeta, PayPal o Sentoo).
+4. **Confirm:** recibe el correo de Google y Zoe le escribe por WhatsApp con los detalles y el pin de ubicación.
+
+La sección "How it works" de la página ya cuenta este flujo, con los horarios calculados según el atardecer real del día.
+
+---
+
+## 6. Arquitectura técnica recomendada
+
+Hoy el sitio es HTML, CSS y JS puros, ideal para una sola página. Con dos idiomas, cinco páginas y un blog, mantener archivos duplicados a mano se vuelve frágil. **Recomiendo migrar a [Astro](https://astro.build):**
+
+- Genera un sitio **estático** igual de rápido que el actual y se aloja gratis (Netlify o Cloudflare Pages).
+- Trae **rutas por idioma** (`/` y `/es/`), así que cada página existe en los dos idiomas con su URL propia. Google indexa ambas versiones y el `hreflang` le dice cuál mostrar a cada visitante.
+- El **blog** se escribe en archivos Markdown. Para que Zoe publique sola, se suma un **panel de edición** (Decap CMS o Keystatic, ambos gratis) en `/admin`.
+- El diseño actual se pasa tal cual: el CSS no cambia y cada sección se vuelve un componente.
+
+**Mapa del sitio:**
+
+| Inglés | Español | Contenido |
+|---|---|---|
+| `/` | `/es/` | Inicio (la landing actual) |
+| `/packages` | `/es/paquetes` | Paquetes con precios, qué incluye cada uno, extras y FAQ de precios |
+| `/about` | `/es/nosotros` | Historia de Zoe (empezó con tablas de charcutería), fotos y valores |
+| `/contact` | `/es/contacto` | WhatsApp, llamada, Instagram, formulario y mapa de playas |
+| `/book` | `/es/reservar` | Calendario de Google + abono |
+| `/blog` y `/blog/[artículo]` | `/es/blog` y `/es/blog/[artículo]` | Blog |
+| `/privacy`, `/terms` | `/es/privacidad`, `/es/terminos` | Legales |
+
+> **Decisión para Jhon:** ¿Astro + Decap CMS o prefieres otro stack (WordPress, Next.js)? Todo el plan funciona con cualquiera. Astro es lo más liviano y lo más rápido de entregar.
+
+---
+
+## 7. Los 4 blogs SEO (carga inicial)
+
+| Pilar E-E-A-T | Título en inglés | Título en español | Palabra clave | Qué lleva |
+|---|---|---|---|---|
+| Experiencia | How we set up a sunset picnic on Eagle Beach | Cómo armamos un picnic al atardecer en Eagle Beach | sunset picnic Eagle Beach | El montaje paso a paso con fotos reales y los tiempos según el atardecer |
+| Conocimiento | The best time and beach in Aruba for a picnic | Guía: la mejor hora y playa en Aruba para tu picnic | best beach for a picnic in Aruba | Tabla de atardeceres por mes, viento, playas (Eagle, Surfside, Palm) y consejos |
+| Autoridad | What couples say after a picnic with us | Lo que dicen las parejas que ya reservaron con nosotros | beach picnic Aruba reviews | Las 4 reseñas reales con su historia (luna de miel, aniversario) y sus fotos |
+| Confianza | What each package includes and how to book without surprises | Qué incluye cada paquete y cómo reservar sin sorpresas | Aruba picnic packages prices | Paquetes, precios, abono, cancelación, clima y pasos para reservar |
+
+Cada artículo lleva fotos reales, enlaces a Paquetes y Reservar, datos estructurados `Article` y autora visible (Zoe).
+
+---
+
+## 8. Cambios de diseño v2 (según los comentarios)
+
+| Comentario | Cambio |
 |---|---|
-| Teepee de bambú con flores, mesa baja, cojines, atardecer. Es la foto insignia | Hero y tarjeta "Sunset picnic" |
-| Picnic nocturno con luces ("Under the moonlight", "Therapy for two") | Tarjeta "Moonlight picnic" |
-| Propuestas con letras "MARRY ME" iluminadas, anillos, "She said yes" | Tarjeta "Proposal setup" y FAQ |
-| Cumpleaños con números gigantes (23), aniversarios | Tarjeta "Birthdays and anniversaries" |
-| Grupos de amigas, mesas largas con camino rosado | Tarjeta "Friends and bachelorettes" y galería |
-| Tablas de charcutería (fue el origen del negocio, según una reseña) | Tarjeta "Charcuterie boards to go" |
-| Detalles: fotos impresas colgadas, tarjetas con mensajes, flores | Sección "The little things" |
-| 4 reseñas de Facebook en formato de post | Hero, sección de reseñas y cita destacada |
-| Posts de temporada (Hello November, Año Nuevo, Betico Croes) | No sirven para la web, se descartaron |
-
-**Marca:** logo circular con anillo coral, "ONE HAPPY PICNIC" en azul, sol amarillo, "Aruba" en script rosado, olas turquesa, palmeras y la estrella roja de la bandera de Aruba. El tono es cálido, celebratorio y muy personal. Una reseña dice "she put so much love into every detail", y ese es el corazón de la marca.
-
-**Problemas del material actual para web:** muchas fotos son historias verticales de 640 px con texto encima. Las mejores (las de 1440 px) son publicaciones del feed.
-
-### Competencia en Aruba
-
-| Competidor | Lo que ofrece | Lo que aprendimos |
-|---|---|---|
-| **Picnic Aruba** (picnicaruba.com) | El más establecido. De $67 a $150, en Surfside, reservas con FareHarbor, estética rosada vintage | Reservas online y menús por tipo de picnic. Una reseña suya se queja de lo difícil que fue encontrar el lugar |
-| **Cabana Sunsets** | Cabana de lujo en Eagle Beach con fotógrafo, $340 por adulto | Hay mercado premium con sesión de fotos incluida |
-| **Resorts** (Bucuti & Tara) y **Boardwalk** (picnic to go) | Picnics para huéspedes y canastas para llevar | La charcutería para llevar tiene demanda |
-
-**Oportunidades para One Happy Picnic:**
-1. **Lo personal.** Ningún competidor vende "la dueña te escribe la nota a mano". Lo pusimos al frente con una sección propia.
-2. **Mandar el pin de ubicación** antes del picnic. Resuelve la queja que vimos en la competencia y lo prometemos en la web.
-3. **Regalar a distancia.** Susan regaló el picnic a su hija desde su casa. Eso es un producto: *gift cards / "Send a picnic"* (fase 3).
-4. **Precio accesible.** Tatyana dice "very affordable". Es un argumento frente a los $150 a $340 del mercado.
-5. Su ficha en My Aruba Guide aparece como "no longer available". Necesitan un canal directo propio, y este sitio lo es.
+| "La foto del hero tiene un recorte raro en el mar" | Volví a la imagen que te gustó (`hero35_preview`). Para que el panel no tape el teepee, agregué arena a la izquierda y pegué encima los píxeles originales, así que no hay costura |
+| "Los iconos con esos colores se ven muy IA" | Iconos de línea fina en un solo color (tinta), sin círculos de colores. En "What's included" quedan separados por líneas finas |
+| "Los tres pasos de cómo trabajamos no me gustan, más dinámico" | "How it works" ahora es una **línea de tiempo** que avanza con el scroll: la foto cambia en cada paso, un sol recorre la línea y las horas se calculan con el atardecer real del día (ej. 4:30 PM llegas, 6:22 PM brindis, 6:30 PM recogemos) |
+| "La estrellita que dice BOOK, GALLERY no me gusta" | Quité todas las etiquetas con estrella. Algunos títulos llevan una **mini foto en forma de píldora** que se abre al hacer scroll ("Pick your [foto] moment"). El hero y el cierre llevan un chip con un punto de sol que late |
+| Plan 2: botones de WhatsApp y llamada siempre visibles | Barra fija abajo en el celular y botón flotante en escritorio. Aparecen solos al poner los números en `CONFIG` |
 
 ---
 
-## 3. Estrategia
+## 9. Lo que necesitamos de Zoe
 
-- **Una oferta, una audiencia, una acción:** picnic privado en la playa → turista en Aruba (o quien le regala) → pedir fecha.
-- **Audiencia principal:** viajeros de EE. UU. (el mercado #1 de Aruba). Parejas de luna de miel o aniversario, propuestas, viajes de amigas y despedidas, y familias.
-- **Audiencia secundaria:** residentes que celebran cumpleaños, y conserjes de hotel que recomiendan.
-- **Fuentes de tráfico esperadas:** link en la bio de Instagram, Google ("beach picnic Aruba", "proposal setup Aruba"), Google Maps, conserjes y TripAdvisor.
+**Para la semana 2 (bloquea el avance):**
+- [ ] Número de **WhatsApp** y número para **llamadas**
+- [ ] **Precios** de cada paquete, mínimo y máximo de invitados, y **% de abono**
+- [ ] **Banco** donde tiene la cuenta del negocio (para decidir entre CX Pay, PayPal y Sentoo)
+- [ ] **Cuenta de Google** para el calendario (que cree la agenda con nosotros en una videollamada, o que nos dé acceso)
+- [ ] Horarios que quiere ofrecer (tarde y noche) y días que no trabaja
+- [ ] **Logo original** (SVG o PNG grande) y **dominio** (si ya tiene uno)
 
-**Objeciones y dónde las responde la página:**
-
-| Objeción | Respuesta en la página |
-|---|---|
-| ¿Cuánto cuesta? | FAQ con precio "desde" |
-| ¿Y si llueve? | FAQ de clima y términos |
-| ¿Cómo encuentro el lugar? | Pin de ubicación ("Permit and a map pin") |
-| ¿Es confiable? | Reseñas reales, permiso de playa incluido y cancelación gratis 24 h |
-| ¿Pueden guardar la sorpresa? | FAQ de propuestas y tarjeta de propuesta |
-| ¿Tengo que pagar ya? | "No payment now. We confirm availability first." junto al botón |
-
----
-
-## 4. Estructura de la página (ya construida)
-
-| # | Sección | Para qué sirve |
-|---|---|---|
-| 1 | Nav flotante tipo isla (glass) | Siempre visible, con botón "Book a picnic" |
-| 2 | **Hero** | Promesa, botón principal, hora del sunset en vivo y reseña de Susan (10/10) |
-| 3 | Franja de confianza | Montaje y limpieza, permiso, comida y bebida, cancelación gratis |
-| 4 | **Experiences** (6 tarjetas) | Sunset, moonlight, propuesta, cumpleaños/aniversario, grupos, charcutería. Cada tarjeta preselecciona la experiencia en el formulario |
-| 5 | Frase grande animada | "You bring the people you love. We bring the table, the flowers…" (las palabras se iluminan con el scroll) |
-| 6 | **What's included** | Lo que incluye cada picnic, con iconos |
-| 7 | The little things | Fotos impresas, notas, flores, con la cita de Taylor |
-| 8 | How it works | 3 pasos: envías la fecha, lo planeamos en WhatsApp, llegas y disfrutas |
-| 9 | **Reviews** | 4 reseñas reales |
-| 10 | Gallery | 9 fotos con visor ampliado y link a Instagram |
-| 11 | **Booking** | Formulario con validación, sunset por fecha y resumen final |
-| 12 | FAQ | 10 preguntas (5 también en datos estructurados para Google) |
-| 13 | CTA final | "Tonight's sunset in Aruba: 6:22 PM. Let us save you a seat for the next one" |
-| 14 | Footer | Links, contacto, privacidad y términos |
-
-Páginas extra: `privacy.html`, `terms.html` y `404.html` (con marca propia).
-
----
-
-## 5. Sistema visual
-
-- **Colores, sacados del logo:** fondo concha `#FFFAF6`, arena `#F7EEE6`, laguna `#E8F5F4`, tinta `#1D1719`, rosa hibisco `#C92F65` (botones, con contraste AA sobre blanco), sol `#F5B323` (estrellas), azul caribe `#1C5FBF`, turquesa `#149AA8`, rojo bandera `#D7263D` y noche `#131209` (footer y cierre).
-- **Tipografía:** Manrope en una sola familia (400 a 700). Geist Mono solo para números como la hora del sunset y los pasos.
-- **Recurso de marca:** la estrella de 4 puntas de la bandera de Aruba como viñeta en cada sección.
-- **Iconos:** Phosphor, incrustados como SVG (sin dependencias externas).
-- **Movimiento:** entradas suaves al hacer scroll (fade + blur + subida), menú móvil que se transforma de hamburguesa a X, y palabras que se encienden en la frase grande. Respeta "reducir movimiento" del sistema.
-- **Móvil primero:** las tarjetas y los detalles se deslizan de lado en el celular, y el hero tiene una foto vertical propia.
-
----
-
-## 6. Uso de IA (Kie) y transparencia
-
-Usé Kie (nano banana pro) **solo para adaptar fotos reales del cliente**, sin inventar montajes:
-
-| Archivo | Qué se hizo | Por qué |
-|---|---|---|
-| Hero de escritorio | La foto #35 (teepee al atardecer) se recompuso en 16:9 con el montaje a la derecha | Deja espacio para el texto sin tapar el teepee |
-| Hero móvil | La misma foto extendida a 9:16 (más cielo y arena) | Que se vea completa en el celular |
-| Charcutería | Se quitó el sticker de texto de la historia y se mejoró la nitidez | Era la única foto buena de la tabla |
-| Logo | Se redibujó limpio en alta resolución | Solo existía pequeño o sobre fondos recargados |
-
-Créditos usados: 90 de 494 (quedan 404). Una versión intermedia del hero se descartó.
-**Recomendación:** reemplazar el logo con el archivo original (SVG o PNG) y, si se puede, hacer una sesión de fotos profesional de 2 horas con 3 montajes (sunset, noche y propuesta). Es la mejora más grande que se le puede hacer al sitio.
-
----
-
-## 7. Reservas: hoy y después
-
-**Hoy (fase 1):**
-1. El cliente llena el formulario (experiencia, fecha, invitados, momento del día, nombre, email, WhatsApp y notas).
-2. Se valida en la página (campos obligatorios, formato de email y fecha desde mañana).
-3. Se arma el mensaje con todo y se abre WhatsApp con el texto listo. Mientras no haya número, se abre el chat de Instagram y hay un botón para copiar el mensaje.
-4. No hay servidor ni base de datos. No guardamos datos personales, y la política de privacidad ya lo explica.
-
-**Para activar WhatsApp** basta con poner el número en `assets/js/main.js`:
-```js
-const CONFIG = {
-  whatsapp: '2975551234', // código de país + número, solo dígitos
-  email: 'hello@…',
-  instagram: 'onehappypicnic.aruba',
-};
-```
-
-**Después (fase 2):** calendario con disponibilidad real y pago de depósito (FareHarbor, como la competencia, o Bookeo, o Stripe Payment Links), con confirmación automática por email.
-
----
-
-## 8. SEO y técnica
-
-- **Ya incluido:** title y meta description, Open Graph (imagen para compartir en WhatsApp e Instagram), schema `LocalBusiness` + `FAQPage`, `sitemap.xml`, `robots.txt`, favicon, manifest, alt text en todas las fotos, HTML semántico, link para saltar al contenido, foco visible y un 404 con marca.
-- **Palabras clave objetivo:** beach picnic Aruba, sunset picnic Aruba, proposal setup Aruba, luxury picnic Eagle Beach, charcuterie board Aruba y birthday picnic Aruba.
-- **Rendimiento:** HTML, CSS y JS puros, sin frameworks. Las imágenes van en WebP con varios tamaños. La primera carga pesa unos **630 KB en escritorio y 730 KB en móvil** (17 solicitudes), con fotos lazy-load más abajo.
-- **Hosting recomendado:** Netlify, Vercel o Cloudflare Pages (gratis) más el dominio (unos USD 12 al año). Sugerencia de dominio: `onehappypicnicaruba.com`, que **todavía no está comprado ni verificado**.
-- **Fuera de la web, igual de importante:** perfil de Google Business con fotos y reseñas. En Aruba mucha gente busca en Google Maps.
-
----
-
-## 9. Lo que necesito del cliente (checklist)
-
-**Para publicar (bloqueante):**
-- [ ] Número de WhatsApp Business
-- [ ] Email de contacto
-- [ ] Dominio (¿ya tienen uno?)
-- [ ] Logo original (SVG, AI o PNG grande)
-- [ ] Precios reales por experiencia y mínimo/máximo de invitados
-- [ ] Confirmar playas donde montan, duración (2 h) y horarios
-- [ ] Política de pago o depósito, cancelación y clima
-- [ ] Permiso para mostrar las reseñas con nombre e inicial del apellido
-
-**Para dejarlo excelente:**
-- [ ] Fotos originales en alta resolución (las del celular, no las de Instagram)
-- [ ] Nombre, foto y una frase de la dueña (sección "Meet your host")
-- [ ] Menú: qué comida incluye, opciones vegetarianas y sin gluten, y si se pueden traer bebidas
-- [ ] Extras con precio: fotógrafo, letras MARRY ME, pastel, globos, números gigantes y tiempo extra
-- [ ] Charcutería: tamaños, precios, delivery o recogida y zonas
-- [ ] Links de Facebook, TikTok y Google Maps
+**Para el contenido (semana 2 y 3):**
+- [ ] Fotos y videos originales en alta resolución (las del celular, no las descargadas de Instagram)
+- [ ] Su historia y una foto suya para "Sobre nosotros"
+- [ ] Textos de cada paquete: qué comida lleva, extras (fotógrafo, letras MARRY ME, pastel, números) y sus precios
+- [ ] Charcutería: tamaños, precios, delivery o recogida
+- [ ] Políticas: abono, cancelación y clima (hoy usamos 24 h, sacado de su ficha anterior)
+- [ ] Permiso para usar las reseñas con nombre e inicial
+- [ ] Revisión del español (lo traducimos nosotros, ella valida el tono)
 
 ---
 
@@ -180,46 +172,109 @@ const CONFIG = {
 
 | Dato en la web | De dónde salió | Estado |
 |---|---|---|
-| "Desde $99 por persona" | Listado de One Happy Picnic en My Aruba Guide | Confirmar |
-| 2 horas por picnic | Mismo listado | Confirmar |
-| Cancelación gratis hasta 24 h | Mismo listado | Confirmar |
-| Qué incluye (teepee, mesa, cojines, flores, comida, refrescos, agua, Prosecco o vino, parlante, letrero, permiso) | Mismo listado | Confirmar |
+| "Desde $99 por persona" | Ficha de One Happy Picnic en My Aruba Guide | Confirmar |
+| 2 horas por picnic | Misma ficha | Confirmar |
+| Cancelación gratis hasta 24 h | Misma ficha | Confirmar |
+| Qué incluye (teepee, mesa, cojines, flores, comida, refrescos, agua, Prosecco o vino, parlante, letrero, permiso) | Misma ficha | Confirmar |
 | Eagle Beach y Surfside | Listados de búsqueda | Confirmar |
 | "2 to 8 guests" en Sunset | Supuesto | Confirmar |
-| Delivery de charcutería, "order a day ahead" | Supuesto | Confirmar |
+| Delivery de charcutería y "order a day ahead" | Supuesto | Confirmar |
 | Fotógrafo bajo pedido | Reseña de Susan ("they even did a photo shoot") | Confirmar precio |
+| Abono por link seguro | Plan 2 | Confirmar el % |
 | Política de clima (reprogramar o reembolsar) | Supuesto | Confirmar |
 | Dominio `onehappypicnicaruba.com` | Supuesto | Por comprar o verificar |
 
 ---
 
-## 11. Roadmap
+## 11. Cronograma (4 semanas)
 
-| Fase | Qué incluye | Tiempo estimado |
+| Semana | Entregable | Depende de |
 |---|---|---|
-| **1. Propuesta** (hecha) | Landing en inglés, privacidad, términos, 404, SEO base y formulario a WhatsApp | Listo |
-| **1.1 Salida en vivo** | Cambiar datos reales, logo y fotos, conectar el dominio, Google Search Console y perfil de Google Business | 1 a 2 días después de recibir los datos |
-| **2. Reservas y alcance** | Calendario con depósito, una página por experiencia (proposals, birthdays, charcuterie) para SEO, analítica (GA4 + Meta Pixel con aviso de cookies) y versión en español | 1 a 2 semanas |
-| **3. Crecimiento** | Gift cards "Send a picnic", paquetes con fotógrafo, página para hoteles y wedding planners, blog ("best sunset beaches in Aruba") y reseñas en Google y TripAdvisor | Continuo |
+| **1** | Diseño de inicio aprobado (v2) y recolección de contenido | Aprobación de Jhon y Zoe ✅ / contenido |
+| **2** | Migración a Astro, páginas Paquetes, Sobre nosotros y Contacto, estructura bilingüe, barra de WhatsApp y llamada activa | Números, precios, logo |
+| **3** | Reservas: Google Calendar embebido y link de abono. Blog con panel de edición y los 4 artículos en EN y ES | Cuenta de Google, pasarela de pago |
+| **4** | QA en celulares reales, SEO técnico (Search Console, sitemap, `hreflang`), dominio, lanzamiento y una sesión con Zoe para enseñarle a publicar en el blog y ajustar horarios | Dominio |
+
+Si el contenido se demora, la entrega se extiende hasta 8 semanas, como dice la oferta.
+
+**Fuera del Plan 2** (para ofrecer después): checkout integrado, mini CRM y contabilidad (Plan 3), gift cards "Send a picnic" y analítica con aviso de cookies.
 
 ---
 
-## 12. Cómo ver el sitio
+## 12. Estrategia y hallazgos (de la v1)
+
+### Instagram (60 imágenes analizadas)
+
+| Lo que hay | Cómo lo usé |
+|---|---|
+| Teepee de bambú con flores, mesa baja, cojines, atardecer. Es la foto insignia | Hero y tarjeta "Sunset picnic" |
+| Picnic nocturno con luces ("Under the moonlight") | Tarjeta "Moonlight picnic" |
+| Propuestas con letras "MARRY ME" iluminadas | Tarjeta "Proposal setup" y FAQ |
+| Cumpleaños con números gigantes y aniversarios | Tarjeta "Birthdays and anniversaries" |
+| Grupos de amigas y mesas largas | Tarjeta "Friends and bachelorettes" y galería |
+| Tablas de charcutería (el origen del negocio) | Tarjeta "Charcuterie boards to go" |
+| Fotos impresas, tarjetas con mensajes, flores | Sección "The little things" |
+| 4 reseñas de Facebook | Hero, reseñas y cita destacada |
+
+### Competencia
+
+| Competidor | Lo que ofrece | Lo que aprendimos |
+|---|---|---|
+| **Picnic Aruba** (picnicaruba.com) | De $67 a $150, Surfside, reservas con FareHarbor | Una reseña suya se queja de lo difícil que fue encontrar el lugar. Nosotros mandamos el pin |
+| **Cabana Sunsets** | Cabana en Eagle Beach con fotógrafo, $340 | Hay mercado premium con fotos |
+| **Resorts y Boardwalk** | Picnics para huéspedes y canastas para llevar | La charcutería para llevar tiene demanda |
+
+**Oportunidades:** lo personal (notas a mano, fotos impresas), el pin de ubicación, regalar a distancia (Susan lo hizo para su hija, así que las gift cards tienen sentido) y el precio accesible ("very affordable").
+
+### Audiencia
+Viajeros de EE. UU. (el mercado #1 de Aruba): parejas, propuestas, viajes de amigas y familias. En segundo lugar, residentes que celebran cumpleaños. **El español abre el mercado latino y local.**
+
+---
+
+## 13. Sistema visual
+
+- **Colores del logo:** concha `#FFFAF6`, arena `#F7EEE6`, laguna `#E8F5F4`, tinta `#1D1719`, hibisco `#C92F65` (botones, contraste AA), sol `#F5B323`, noche `#131209`.
+- **Tipografía:** Manrope (400 a 700). Geist Mono solo para horas y números.
+- **Iconos:** Phosphor en peso *light*, un solo color.
+- **Movimiento:** entradas suaves con el scroll, títulos con mini foto que se abre, frase que se ilumina palabra por palabra y línea de tiempo con el sol. Respeta "reducir movimiento".
+
+---
+
+## 14. Uso de IA (Kie) y transparencia
+
+Solo se adaptaron **fotos reales** del cliente, sin inventar montajes:
+
+| Archivo | Qué se hizo |
+|---|---|
+| Hero de escritorio (v2) | La imagen aprobada (`hero35_preview`) con arena extra a la izquierda. Los píxeles originales se pegaron encima, así que el montaje no cambia |
+| Hero móvil | La foto #35 extendida a 9:16 |
+| Charcutería | Se quitó el sticker de texto y se mejoró la nitidez |
+| Logo | Redibujado en alta (provisional, hasta tener el original) |
+
+Créditos usados: 108 de 494 (quedan 386).
+
+---
+
+## 15. Cómo ver el sitio
 
 ```bash
-cd aruba
-python3 -m http.server 8000
-# abrir http://localhost:8000
+python3 -m http.server 8000   # http://localhost:8000
 ```
 
-**Estructura:**
+Para activar WhatsApp, la llamada y el email, se llena `CONFIG` al inicio de `assets/js/main.js`:
+```js
+const CONFIG = {
+  whatsapp: '2975551234', // código de país + número, solo dígitos
+  phone: '2975551234',
+  email: 'hello@…',
+  instagram: 'onehappypicnic.aruba',
+};
 ```
-index.html            Landing completa
-privacy.html          Política de privacidad
-terms.html            Términos de reserva
-404.html              Página no encontrada
-assets/css/styles.css Sistema visual (tokens al inicio)
-assets/js/main.js     Menú, animaciones, sunset en vivo, formulario (CONFIG arriba)
-assets/img/           Fotos WebP optimizadas, logo, favicon, imagen OG
-docs/PLANEACION.md    Este documento
-```
+
+**Fuentes consultadas sobre pagos y calendario:**
+- [Google Calendar: cobrar citas (requiere Workspace y Stripe)](https://support.google.com/calendar/answer/13762729)
+- [Google Calendar: agendas de citas](https://support.google.com/calendar/answer/11608416)
+- [Stripe: territorios no soportados (incluye Aruba)](https://support.stripe.com/questions/stripe-availability-for-outlying-territories-of-supported-countries)
+- [Aruba Bank: solución eCommerce con CX Pay](https://www.arubabank.com/Corporate/Banking/Business-Services/Ecommerce-Solution)
+- [Aruba Bank: Sentoo para negocios](https://www.arubabank.com/sentoo-for-business)
+- [PayPal: códigos de país (Aruba listado)](https://developer.paypal.com/api/rest/reference/country-codes/)
