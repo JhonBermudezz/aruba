@@ -3,7 +3,9 @@
 
 export const SITE = {
   name: 'One Happy Picnic Aruba',
-  url: 'https://onehappypicnicaruba.com',
+  // Full public address without a trailing slash. GitHub Pages builds pass their own.
+  url: (process.env.SITE_URL || 'https://onehappypicnicaruba.com').replace(/\/$/, ''),
+  staging: Boolean(process.env.STAGING),
   instagram: 'https://www.instagram.com/onehappypicnic.aruba/',
   instagramDm: 'https://ig.me/m/onehappypicnic.aruba',
   handle: '@onehappypicnic.aruba',

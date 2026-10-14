@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "build:preview": "PREVIEW=1 astro build --outDir dist-preview && node scripts/relative-links.mjs dist-preview"
+    "build:gh": "astro build && node scripts/rewrite-links.mjs dist --base \"${BASE_PATH:-/}\"",
+    "build:preview": "PREVIEW=1 astro build --outDir dist-preview && node scripts/rewrite-links.mjs dist-preview --relative",
+    "preview": "astro preview"
   },
   "dependencies": {
     "astro": "7.3.5"

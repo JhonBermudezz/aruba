@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config';
 const preview = Boolean(process.env.PREVIEW);
 
 export default defineConfig({
-  site: 'https://onehappypicnicaruba.com',
+  site: process.env.SITE_URL || 'https://onehappypicnicaruba.com',
   trailingSlash: preview ? 'ignore' : 'always',
   build: { format: preview ? 'file' : 'directory', inlineStylesheets: 'never' },
   compressHTML: true,

@@ -14,7 +14,7 @@ const {
 } = Astro.props;
 
 const path = Astro.url.pathname;
-const canonical = new URL(path, SITE.url).href;
+const canonical = `${SITE.url}${path}`;
 const isCurrent = (href) => path === href || (href !== '/' && path.startsWith(href));
 ---
 <!doctype html>
@@ -25,14 +25,14 @@ const isCurrent = (href) => path === href || (href !== '/' && path.startsWith(hr
   <title>{title}</title>
   <meta name="description" content={description}>
   <link rel="canonical" href={canonical}>
-  {noindex && <meta name="robots" content="noindex">}
+  {(noindex || SITE.staging) && <meta name="robots" content="noindex">}
   <meta name="theme-color" content="#FFFAF6">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content={SITE.name}>
   <meta property="og:title" content={title}>
   <meta property="og:description" content={description}>
   <meta property="og:url" content={canonical}>
-  <meta property="og:image" content={new URL(image, SITE.url).href}>
+  <meta property="og:image" content={`${SITE.url}${image}`}>
   <meta property="og:image:alt" content={imageAlt}>
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">

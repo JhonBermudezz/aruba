@@ -1,9 +1,13 @@
-// Rewrites root links ("/about/", "/assets/...") in a PREVIEW build to relative
-// file links ("about.html", "../assets/...") so the site opens from any folder.
+// Rewrites root links ("/about/", "/assets/...") after a build.
+//   node scripts/rewrite-links.mjs dist --base /aruba/   -> "/aruba/about/" (GitHub Pages project site)
+//   node scripts/rewrite-links.mjs dist-preview --relative -> "about.html", "../assets/..." (private preview, any folder)
 import { readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
 import { join, relative, dirname, sep } from 'node:path';
 
-const root = process.argv[2] || 'dist-preview';
+const [root = 'dist', ...flags] = process.argv.slice(2);
+const relativeMode = flags.includes('--relative');
+const baseIndex = flags.indexOf('--base');
+const base = baseIndex >= 0 ? `/${(flags[baseIndex + 1] || '/').replace(/^\/+|\/+$/g, '')}/`.replace('//', '/') : '/';
 
 const walk = (dir) => readdirSync(dir).flatMap((name) => {
   const full = join(dir, name);
@@ -23,11 +27,12 @@ const toFile = (url) => {
 
 for (const file of walk(root)) {
   const depth = relative(root, dirname(file)).split(sep).filter(Boolean).length;
-  const prefix = '../'.repeat(depth);
+  const prefix = relativeMode ? '../'.repeat(depth) : base;
+  const map = (url) => (relativeMode ? prefix + toFile(url) : prefix + url.slice(1));
   let html = readFileSync(file, 'utf8');
-  html = html.replace(/(\s(?:href|src|data-full))="(\/(?!\/)[^"]*)"/g, (_, attr, url) => `${attr}="${prefix}${toFile(url)}"`);
+  html = html.replace(/(\s(?:href|src|data-full))="(\/(?!\/)[^"]*)"/g, (_, attr, url) => `${attr}="${map(url)}"`);
   html = html.replace(/(\ssrcset)="([^"]+)"/g, (_, attr, list) => `${attr}="${list.replace(/(^|,\s*)\/(?!\/)/g, `$1${prefix}`)}"`);
   html = html.replace(/url\((['"]?)\/(?!\/)/g, (_, q) => `url(${q}${prefix}`);
   writeFileSync(file, html);
 }
-console.log(`relative links written in ${root}`);
+console.log(`links rewritten in ${root} (${relativeMode ? 'relative files' : `base ${base}`})`);

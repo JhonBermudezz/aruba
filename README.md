@@ -26,3 +26,13 @@ src/data/                Contenido y datos estructurados (schema.org)
 public/assets/           CSS, JS e imágenes optimizadas
 scripts/                 Ayudas de compilación
 ```
+
+## Publicar en GitHub Pages
+
+El flujo `.github/workflows/deploy-pages.yml` compila y publica el sitio en cada push a esta rama o a `main`.
+
+1. Una sola vez: en GitHub, **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Haz push (o corre el flujo a mano desde la pestaña **Actions**).
+3. El sitio queda en `https://<usuario>.github.io/<repo>/`.
+
+Mientras sea un borrador, esa copia lleva `noindex` para que Google no la indexe (`STAGING=1` en el flujo). Cuando el dominio final esté listo, se quita `STAGING`, se cambia `SITE_URL` y `BASE_PATH` pasa a `/`.
