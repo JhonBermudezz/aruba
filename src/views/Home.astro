@@ -21,7 +21,7 @@ const gallery = ['g-golden-table', 'g-kiss', 'g-torches', 'g-long-table', 'g-tee
 const C = {
   en: {
     title: 'One Happy Picnic Aruba | Private sunset picnics on the beach',
-    description: 'Private beach picnics in Aruba, styled before you arrive. Sunset and moonlight picnics, proposals, birthdays and charcuterie boards on Eagle Beach and Surfside.',
+    description: 'Private beach picnics in Aruba, styled before you arrive. Golden hour picnics, picnics under the stars, proposals, birthdays and charcuterie boards on Eagle Beach and Surfside.',
     heroAlt: 'A bamboo teepee wrapped in pink flowers over a low wooden picnic table, white cushions and a turquoise blanket on the sand at sunset in Aruba',
     h1: ['Sunset picnics on the sand,', 'styled before you arrive'],
     sub: 'Zoe and her team set up your private picnic on Eagle Beach or Surfside, flowers and grazing board included. You arrive at golden hour and we clean up after you leave.',
@@ -30,12 +30,12 @@ const C = {
     trustLabel: 'What every picnic includes',
     trust: ['We set up and clean up', 'Beach permit included', 'Food and drinks included', '24 hour free cancellation'],
     exp: ['Pick your', 'moment'], expLead: 'Every picnic is private. Tell us the occasion and we style the table for it.', all: 'All picnics',
-    promiseLabel: 'Our promise',
+    promiseLabel: 'Our promise', logoAlt: 'One Happy Picnic Aruba logo',
     promise: ['We set your table on the sand before you leave the hotel. You sit down and', 'watch the sun drop into the Caribbean.'],
   },
   es: {
     title: 'One Happy Picnic Aruba | Picnics privados al atardecer en la playa',
-    description: 'Picnics privados en la playa en Aruba, montados antes de que llegues. Picnics al atardecer y de noche, propuestas, cumpleaños y tablas de charcutería en Eagle Beach y Surfside.',
+    description: 'Picnics privados en la playa en Aruba, montados antes de que llegues. Picnics en la hora dorada y bajo las estrellas, propuestas, cumpleaños y tablas de charcutería en Eagle Beach y Surfside.',
     heroAlt: 'Tipi de bambú con flores rosadas sobre una mesa baja de madera, cojines blancos y una manta turquesa en la arena al atardecer en Aruba',
     h1: ['Tu picnic en la arena,', 'listo antes de que llegues'],
     sub: 'Zoe y su equipo montan tu picnic privado en Eagle Beach o Surfside, con flores y tabla de picoteo incluidas. Llegas en la hora dorada y recogemos todo cuando te vas.',
@@ -44,7 +44,7 @@ const C = {
     trustLabel: 'Lo que incluye cada picnic',
     trust: ['Montamos y recogemos', 'Permiso de playa incluido', 'Comida y bebidas incluidas', 'Cancelación gratis hasta 24 horas antes'],
     exp: ['Elige tu', 'momento'], expLead: 'Cada picnic es privado. Cuéntanos la ocasión y decoramos la mesa para ella.', all: 'Todos los picnics',
-    promiseLabel: 'Nuestra promesa',
+    promiseLabel: 'Nuestra promesa', logoAlt: 'Logo de One Happy Picnic Aruba',
     promise: ['Ponemos tu mesa en la arena antes de que salgas del hotel. Te sientas y', 've cómo el sol cae en el Caribe.'],
   },
 }[lang];
@@ -108,9 +108,13 @@ const icons = ['broom', 'certificate', 'fork-knife', 'shield-check'];
     </div>
   </section>
 
-  <section class="tagline section--sand" aria-label={C.promiseLabel}>
+  <section class="tagline tagline--photo" aria-label={C.promiseLabel}>
+    <div class="tagline__bg">
+      <img src="/assets/img/aerial-eagle-1080.webp" srcset="/assets/img/aerial-eagle-720.webp 720w, /assets/img/aerial-eagle-1080.webp 1080w, /assets/img/aerial-eagle-1600.webp 1600w" sizes="100vw" width="1600" height="1050" loading="lazy" alt="">
+    </div>
     <div class="container">
       <div class="tagline__inner">
+        <img class="tagline__logo" src="/assets/img/logo-192.webp" width="96" height="96" alt={C.logoAlt} loading="lazy">
         <p class="tagline__text" data-reveal-words>{C.promise[0]} <span data-accent>{C.promise[1]}</span></p>
       </div>
     </div>

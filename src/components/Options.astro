@@ -1,0 +1,26 @@
+---
+const { data, bookHref, id = 'options' } = Astro.props;
+---
+<section class="section section--sand" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <div class="section-head reveal">
+      <h2 class="h2" id={`${id}-title`}>{data.heading}</h2>
+      <p class="lead">{data.lead}</p>
+    </div>
+    <ul class="options">
+      {data.items.map((o, i) => (
+        <li class={`option reveal${i % 2 ? ' reveal-d1' : ''}`}>
+          <div class="option__head">
+            <h3>{o.title}</h3>
+            <span class="option__meta mono">{o.meta}</span>
+          </div>
+          <p>{o.text}</p>
+          <ul class="option__list">
+            {o.list.map((x) => <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>{x}</li>)}
+          </ul>
+          <a class={`btn ${i === 0 ? 'btn--ghost' : 'btn--primary'}`} href={`${bookHref}${i === 0 ? '' : `-${i + 1}`}`}>{data.cta} <svg class="icon icon-move"><use href="#i-arrow-right"/></svg></a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

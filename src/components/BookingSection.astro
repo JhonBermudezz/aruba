@@ -9,11 +9,13 @@ const T = {
   en: {
     title: ['Request your', 'date'], lead: 'Send us the date and the occasion. We reply on WhatsApp to confirm availability.',
     steps: ['We reply with availability for your date and beach.', 'Choose colors, menu and extras like cake, photographer or marquee letters.', 'Pay your deposit through a secure link and get the map pin of your spot.'],
-    wa: 'Message us on WhatsApp', experience: 'Experience', date: 'Date', guests: 'Guests', more: '11 or more',
+    wa: 'Message us on WhatsApp', experience: 'Experience', date: 'Date', guests: 'Guests', more: ['11 to 20', '21 to 30'],
     hint: "Pick a date to see that day's sunset time in Aruba.", timeOfDay: 'Time of day',
     times: [['golden', 'Golden hour', 'sun-horizon'], ['stars', 'Under the stars', 'moon-stars'], ['morning', 'Morning', 'sparkle']],
     name: 'Your name', email: 'Email', phone: 'WhatsApp number', opt: '(optional)', notes: 'Anything we should know?',
-    notesPh: 'The occasion, colors you love, allergies, or the surprise you are planning',
+    notesPh: 'The occasion, colors you love, or the surprise you are planning',
+    extrasLegend: 'Add extras', extras: [['photographer', 'Professional photographer (from $250)', 'camera'], ['chef', 'Private chef', 'fork-knife'], ['cake', 'Cake', 'cake'], ['sign', 'LED sign or MARRY ME letters', 'heart'], ['time', 'Extra time', 'clock']],
+    allergies: 'Food allergies', allergiesPh: 'Nuts, dairy, gluten, shellfish… or write none', allergiesHint: 'We prepare the food around them, so tell us even small ones.',
     send: 'Send my request', noPay: 'No payment now. We confirm availability first.',
     ready: 'Your request is ready to send', readyCopy: 'Send it to us and we will reply with availability for your date.',
     open: 'Open WhatsApp', copy: 'Copy message', edit: 'Edit request',
@@ -21,11 +23,13 @@ const T = {
   es: {
     title: ['Pide tu', 'fecha'], lead: 'Envíanos la fecha y la ocasión. Te respondemos por WhatsApp para confirmar disponibilidad.',
     steps: ['Te respondemos con la disponibilidad para tu fecha y playa.', 'Eliges colores, menú y extras como pastel, fotógrafo o letras iluminadas.', 'Pagas el abono con un link seguro y recibes el pin de tu lugar.'],
-    wa: 'Escríbenos por WhatsApp', experience: 'Experiencia', date: 'Fecha', guests: 'Personas', more: '11 o más',
+    wa: 'Escríbenos por WhatsApp', experience: 'Experiencia', date: 'Fecha', guests: 'Personas', more: ['11 a 20', '21 a 30'],
     hint: 'Elige una fecha para ver la hora del atardecer de ese día en Aruba.', timeOfDay: 'Momento del día',
     times: [['golden', 'Hora dorada', 'sun-horizon'], ['stars', 'Bajo las estrellas', 'moon-stars'], ['morning', 'Mañana', 'sparkle']],
     name: 'Tu nombre', email: 'Correo', phone: 'Número de WhatsApp', opt: '(opcional)', notes: '¿Algo que debamos saber?',
-    notesPh: 'La ocasión, los colores que te gustan, alergias o la sorpresa que estás planeando',
+    notesPh: 'La ocasión, los colores que te gustan o la sorpresa que estás planeando',
+    extrasLegend: 'Agrega extras', extras: [['photographer', 'Fotógrafo profesional (desde USD 250)', 'camera'], ['chef', 'Chef privado', 'fork-knife'], ['cake', 'Pastel', 'cake'], ['sign', 'Letrero LED o letras MARRY ME', 'heart'], ['time', 'Tiempo extra', 'clock']],
+    allergies: 'Alergias alimentarias', allergiesPh: 'Nueces, lácteos, gluten, mariscos… o escribe ninguna', allergiesHint: 'Preparamos la comida pensando en ellas, así que cuéntanos aunque sean leves.',
     send: 'Enviar mi solicitud', noPay: 'No pagas nada ahora. Primero confirmamos disponibilidad.',
     ready: 'Tu solicitud está lista para enviar', readyCopy: 'Envíanosla y te respondemos con la disponibilidad para tu fecha.',
     open: 'Abrir WhatsApp', copy: 'Copiar mensaje', edit: 'Editar solicitud',
@@ -55,7 +59,7 @@ const T = {
           <div class="field field--full">
             <label for="f-experience">{T.experience}</label>
             <select class="input" id="f-experience" name="experience" required>
-              {EXPERIENCES.map((e) => <option value={e.booking} data-slug={expSlug(lang, e)}>{e.booking}</option>)}
+              {EXPERIENCES.flatMap((e) => (e.bookingOptions || [e.booking]).map((b, i) => <option value={b} data-slug={i === 0 ? expSlug(lang, e) : `${expSlug(lang, e)}-${i + 1}`}>{b}</option>))}
             </select>
           </div>
           <div class="field">
@@ -66,7 +70,7 @@ const T = {
           <div class="field">
             <label for="f-guests">{T.guests}</label>
             <select class="input" id="f-guests" name="guests" required>
-              {['2', '3', '4', '5', '6', '7', '8', '9', '10', T.more].map((g) => <option>{g}</option>)}
+              {['2', '3', '4', '5', '6', '7', '8', '9', '10', ...T.more].map((g) => <option>{g}</option>)}
             </select>
           </div>
           <p class="field__hint field--full" id="f-date-hint" aria-live="polite"><svg class="icon"><use href="#i-sun-horizon"/></svg> <span data-date-hint>{T.hint}</span></p>
@@ -76,6 +80,18 @@ const T = {
               {T.times.map(([kind, label, icon], i) => <label class="chip"><input type="radio" name="time" value={label} data-kind={kind} checked={i === 0}><span><svg class="icon"><use href={`#i-${icon}`}/></svg> {label}</span></label>)}
             </div>
           </fieldset>
+          <fieldset class="field field--full">
+            <legend>{T.extrasLegend} <span class="opt">{T.opt}</span></legend>
+            <div class="chips">
+              {T.extras.map(([key, label, icon]) => <label class="chip"><input type="checkbox" name="extras" value={label} data-extra={key}><span><svg class="icon"><use href={`#i-${icon}`}/></svg> {label}</span></label>)}
+            </div>
+          </fieldset>
+          <div class="field field--full">
+            <label for="f-allergies">{T.allergies}</label>
+            <input class="input" id="f-allergies" name="allergies" type="text" required placeholder={T.allergiesPh} aria-describedby="f-allergies-hint f-allergies-error">
+            <p class="field__hint" id="f-allergies-hint">{T.allergiesHint}</p>
+            <p class="field__error" id="f-allergies-error" role="alert"></p>
+          </div>
           <div class="field">
             <label for="f-name">{T.name}</label>
             <input class="input" id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error">

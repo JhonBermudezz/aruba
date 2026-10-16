@@ -11,6 +11,7 @@ const {
   items = INCLUDED,
   extras = [],
   photo = ui.includedPhoto,
+  extrasTitle = ui.addTo,
 } = Astro.props;
 const delay = (i) => (i % 2 ? ' reveal-d1' : '');
 ---
@@ -32,7 +33,7 @@ const delay = (i) => (i % 2 ? ' reveal-d1' : '');
       </ul>
       {extras.length > 0 && (
         <div class="extras reveal">
-          <h3>{ui.addTo}</h3>
+          <h3>{extrasTitle}</h3>
           <p>{extras.join(' · ')}</p>
         </div>
       )}

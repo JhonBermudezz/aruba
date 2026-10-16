@@ -69,4 +69,4 @@ Rain is rare in Aruba, and most of it falls between October and January in short
 
 Send us your date, the number of guests and the occasion through the [booking form](/book/). We reply with availability, then plan the colors, the menu and any extras with you on WhatsApp. To hold the date, you pay a deposit through a secure link.
 
-You can see what is on the table on our [sunset picnic page](/picnics/sunset-picnic/), or read the [questions guests ask](/faq/) before they book.
+You can see what is on the table on our [golden hour picnic page](/picnics/golden-hour-picnic/), or read the [questions guests ask](/faq/) before they book.

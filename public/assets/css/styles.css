@@ -4,12 +4,12 @@
 :root {
   /* Color, sampled from the logo: coral ring, hibiscus script, sunset half sun, Caribbean blue, Aruba flag star */
   --shell: #FFFAF6;
-  --sand: #F7EEE6;
-  --lagoon-wash: #E8F5F4;
+  --sand: #FCEEF2;          /* pastel pink from the logo */
+  --lagoon-wash: #DDF3F2;   /* pastel turquoise, the sea */
   --ink: #1D1719;
   --ink-soft: #5E5357;
   --ink-faint: #8C8085;
-  --line: #EADFD8;
+  --line: #F0DCE3;
   --hibiscus: #C92F65;
   --hibiscus-press: #A9244F;
   --hibiscus-wash: #FBE7EE;
@@ -17,6 +17,8 @@
   --sun: #F5B323;
   --sea: #1C5FBF;
   --turquoise: #149AA8;
+  --turquoise-deep: #0E7480;
+  --blush: #FFC9DA;
   --star-red: #D7263D;
   --night: #131209;
   --night-2: #1F1F1F;
@@ -87,7 +89,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--hibiscus); outline-offset: 3px; border-radius: 4px; }
 
 /* Thin single color icons for features */
-.feature-icon { width: 28px; height: 28px; flex: none; fill: currentColor; color: var(--ink); }
+.feature-icon { width: 28px; height: 28px; flex: none; fill: currentColor; color: var(--turquoise-deep); }
 .included-list .feature-icon { width: 32px; height: 32px; }
 
 /* Photo pill inside headings: grows open when the heading scrolls in */
@@ -498,7 +500,7 @@ select.input {
   background-repeat: no-repeat; background-position: right 16px center; background-size: 16px;
 }
 textarea.input { min-height: 112px; resize: vertical; }
-.input:hover { border-color: #D9CBC2; }
+.input:hover { border-color: #E3C3CF; }
 .input:focus { outline: none; border-color: var(--hibiscus); box-shadow: 0 0 0 4px var(--hibiscus-wash); background: #FFFFFF; }
 .input[aria-invalid="true"] { border-color: var(--star-red); box-shadow: 0 0 0 4px #FCE4E7; }
 .field__hint { font-size: 14px; line-height: 20px; color: var(--ink-soft); }
@@ -517,7 +519,7 @@ fieldset.field { border: 0; margin: 0; padding: 0; }
   transition: background-color 0.7s var(--ease), color 0.7s var(--ease), border-color 0.7s var(--ease);
 }
 .chip span .icon { width: 16px; height: 16px; }
-.chip input:hover + span { border-color: #D9CBC2; }
+.chip input:hover + span { border-color: #E3C3CF; }
 .chip input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--shell); }
 .chip input:focus-visible + span { outline: 2px solid var(--hibiscus); outline-offset: 2px; }
 .form-foot { display: grid; gap: var(--s-200); margin-top: var(--s-400); }
@@ -787,3 +789,42 @@ body.has-dock { padding-bottom: var(--s-900); }
 .author .author__name { font-weight: 700; color: var(--ink); margin-bottom: var(--s-50); }
 .article__foot { max-width: 720px; margin: var(--s-500) auto var(--s-900); display: grid; gap: var(--s-200); }
 .article__foot p { color: var(--ink-soft); }
+
+/* ---------- Tagline over the aerial photo of Eagle Beach ---------- */
+.tagline--photo { position: relative; isolation: isolate; overflow: hidden; background: #0E3A44; }
+.tagline__bg { position: absolute; inset: 0; z-index: -1; }
+.tagline__bg img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; }
+.tagline__bg::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(6, 36, 44, 0.52) 0%, rgba(6, 36, 44, 0.4) 50%, rgba(6, 36, 44, 0.6) 100%);
+}
+.tagline__logo { width: 96px; height: 96px; border-radius: 9999px; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 16px 40px -12px rgba(0, 0, 0, 0.5); }
+@media (min-width: 1024px) { .tagline__logo { width: 112px; height: 112px; } }
+.tagline--photo .tagline__text { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35); }
+.tagline--photo .tagline__text .w { color: rgba(255, 255, 255, 0.34); }
+.tagline--photo .tagline__text .w.is-lit { color: #FFFFFF; }
+.tagline--photo .tagline__text .w--accent.is-lit { color: var(--blush, #FFC9DA); }
+
+/* ---------- Package options (proposals) ---------- */
+.options { display: grid; gap: var(--s-300); }
+@media (min-width: 768px) { .options { grid-template-columns: repeat(2, 1fr); } }
+.option { display: grid; gap: var(--s-200); align-content: start; padding: var(--s-400); border-radius: 24px; background: var(--shell); box-shadow: inset 0 0 0 1px var(--line); }
+.option__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-200); }
+.option h3 { font-size: 24px; line-height: 32px; letter-spacing: -0.02em; }
+.option__meta { flex: none; font-size: 14px; line-height: 20px; padding: var(--s-50) var(--s-100); border-radius: 9999px; background: var(--lagoon-wash); color: var(--turquoise-deep); }
+.option > p { color: var(--ink-soft); }
+.option__list { display: grid; gap: var(--s-75); padding-bottom: var(--s-100); }
+.option__list li { display: flex; gap: var(--s-75); align-items: flex-start; color: var(--ink-soft); }
+.option__list .icon { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--hibiscus); }
+.option .btn { justify-self: start; }
+
+/* A lone card in the last row spans the row as a wide card */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .exp-grid > .exp-card:last-child:nth-child(odd) { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-200); align-items: center; }
+}
+@media (min-width: 1024px) {
+  .exp-grid > .exp-card:last-child:nth-child(3n + 1) { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-400); align-items: center; }
+  .exp-grid > .exp-card:last-child:nth-child(3n + 1) .exp-card__media { aspect-ratio: 16 / 10; }
+  .exp-grid > .exp-card:last-child:nth-child(3n + 1) h3 { font-size: 24px; line-height: 32px; }
+  .mini-cards { grid-template-columns: repeat(3, 1fr); }
+}

@@ -295,7 +295,7 @@
   const form = $('#booking-form');
   if (!form) return;
   const success = $('#booking-success');
-  const fields = { experience: $('#f-experience'), date: $('#f-date'), guests: $('#f-guests'), name: $('#f-name'), email: $('#f-email'), phone: $('#f-phone'), notes: $('#f-notes') };
+  const fields = { experience: $('#f-experience'), date: $('#f-date'), guests: $('#f-guests'), name: $('#f-name'), email: $('#f-email'), phone: $('#f-phone'), notes: $('#f-notes'), allergies: $('#f-allergies') };
   const dateHint = $('[data-date-hint]');
   const minDay = addDays(arubaNow(), 1);
   fields.date.min = isoDate(minDay);
@@ -315,8 +315,8 @@
   function plannedTime(day) {
     const sunset = sunsetHour(day.y, day.m, day.d);
     const choice = timeChoice();
-    if (choice === 'golden') return { sunset, text: tr(`Golden hour picnics start around ${fmtHour(roundQuarter(sunset - 1.75))}.`, `Los picnics de hora dorada empiezan hacia las ${fmtHour(roundQuarter(sunset - 1.75))}.`) };
-    if (choice === 'stars') return { sunset, text: tr(`Moonlight picnics start around ${fmtHour(roundQuarter(sunset + 0.5))}.`, `Los picnics nocturnos empiezan hacia las ${fmtHour(roundQuarter(sunset + 0.5))}.`) };
+    if (choice === 'golden') return { sunset, text: tr(`Golden hour picnics start around ${fmtHour(roundQuarter(sunset - 1.75))}.`, `Los picnics en la hora dorada empiezan hacia las ${fmtHour(roundQuarter(sunset - 1.75))}.`) };
+    if (choice === 'stars') return { sunset, text: tr(`Picnics under the stars start around ${fmtHour(roundQuarter(sunset + 0.5))}.`, `Los picnics bajo las estrellas empiezan hacia las ${fmtHour(roundQuarter(sunset + 0.5))}.`) };
     return { sunset, text: tr('Morning picnics are planned around your schedule.', 'Los picnics de mañana se planean según tu horario.') };
   }
   function paintHint() {
@@ -346,9 +346,10 @@
       if (!v) return setError(input, tr('Choose the date for your picnic.', 'Elige la fecha de tu picnic.'));
       return setError(input, v < input.min ? tr(`Choose a date from ${fmtDate(minDay, { month: 'short', day: 'numeric' })} onward.`, `Elige una fecha desde el ${fmtDate(minDay, { day: 'numeric', month: 'short' })}.`) : '');
     }
+    if (input === fields.allergies) return setError(input, v ? '' : tr('Tell us about allergies, or write none.', 'Cuéntanos de alergias, o escribe ninguna.'));
     return true;
   }
-  [fields.name, fields.email, fields.date].forEach((input) => {
+  [fields.name, fields.email, fields.date, fields.allergies].forEach((input) => {
     input.addEventListener('blur', () => { if (input.value || input.getAttribute('aria-invalid') === 'true') validate(input); });
     input.addEventListener('input', () => { if (input.getAttribute('aria-invalid') === 'true') validate(input); });
   });
@@ -357,7 +358,7 @@
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const status = $('#form-status');
-    const checks = [fields.date, fields.name, fields.email].map(validate);
+    const checks = [fields.date, fields.allergies, fields.name, fields.email].filter(Boolean).map(validate);
     if (checks.includes(false)) {
       status.textContent = tr('Some details are missing. Check the highlighted fields.', 'Faltan datos. Revisa los campos marcados.');
       status.hidden = false;
@@ -370,11 +371,14 @@
     const { sunset } = plannedTime(day);
     const longDate = fmtDate(day, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const time = (timeInput() || {}).value || "";
+    const extras = $$('input[name="extras"]:checked', form).map((x) => x.value);
     const rows = [
       [tr('Experience', 'Experiencia'), fields.experience.value],
       [tr('Date', 'Fecha'), longDate],
       [tr('Time', 'Momento'), timeChoice() === 'morning' ? time : `${time} (${tr('sunset', 'atardecer')} ${fmtHour(sunset)})`],
       [tr('Guests', 'Invitados'), fields.guests.value],
+      ...(extras.length ? [[tr('Extras', 'Extras'), extras.join(', ')]] : []),
+      ...(fields.allergies ? [[tr('Allergies', 'Alergias'), fields.allergies.value.trim()]] : []),
       [tr('Name', 'Nombre'), fields.name.value.trim()],
       [tr('Email', 'Correo'), fields.email.value.trim()],
     ];

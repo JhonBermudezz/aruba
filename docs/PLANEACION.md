@@ -112,8 +112,9 @@ La sección "How it works" de la página ya cuenta este flujo, con los horarios 
 |---|---|---|---|
 | `/` | `/es/` | Inicio (la landing) | ✅ |
 | `/picnics/` | `/es/picnics/` | Índice con las 6 experiencias | ✅ |
-| `/picnics/sunset-picnic/` | `/es/picnics/picnic-al-atardecer/` | Sunset picnic | ✅ |
-| `/picnics/moonlight-picnic/` | `/es/picnics/picnic-nocturno/` | Moonlight picnic | ✅ |
+| `/picnics/golden-hour-picnic/` | `/es/picnics/picnic-en-la-hora-dorada/` | Golden hour picnic | ✅ |
+| `/picnics/weddings-vow-renewals/` | `/es/picnics/bodas-y-renovacion-de-votos/` | Bodas y renovación de votos (hasta 30) | ✅ |
+| `/picnics/picnic-under-the-stars/` | `/es/picnics/picnic-bajo-las-estrellas/` | Picnic under the stars | ✅ |
 | `/picnics/proposal-setup/` | `/es/picnics/propuesta-de-matrimonio/` | Propuestas | ✅ |
 | `/picnics/birthday-anniversary-picnic/` | `/es/picnics/cumpleanos-y-aniversarios/` | Cumpleaños y aniversarios | ✅ |
 | `/picnics/group-bachelorette-picnic/` | `/es/picnics/grupos-y-despedidas/` | Grupos y despedidas | ✅ |
@@ -161,7 +162,36 @@ Cada artículo lleva fotos reales, enlaces a Paquetes y Reservar, datos estructu
 
 ---
 
-## 9. Lo que necesitamos de Zoe
+## 9. Plan de acción de la reunión del 14 de octubre de 2026
+
+Zoe e Iraly Villegas son la misma persona: en la web se queda el nombre **Zoe**.
+
+**Hecho (16 de octubre)**
+
+| Cambio | Dónde |
+|---|---|
+| Planes renombrados: **Golden hour picnic / Picnic en la hora dorada** y **Picnic under the stars / Picnic bajo las estrellas** (ya no chocan "atardecer" y "puesta de sol") | Nombres, URLs, formulario, FAQ, blog |
+| Propuesta en dos opciones: **sencilla** (1 hora, arco de flores y letrero LED) y **con picnic** (2 horas, charcutería y bebidas), cada una con su botón al formulario | `/picnics/proposal-setup/` |
+| **Fotógrafo profesional** de USD 250 a 300 como extra, con su pregunta en el FAQ | Propuestas, bodas, formulario |
+| **Chef privado** como extra seleccionable en todos los servicios, con su pregunta en el FAQ | Formulario y lista de extras |
+| Página nueva de **bodas pequeñas y renovación de votos**, hasta 30 invitados, solo con cotización | `/picnics/weddings-vow-renewals/`, `/es/picnics/bodas-y-renovacion-de-votos/` |
+| Formulario: **extras seleccionables**, campo obligatorio de **alergias** y número de invitados hasta 30 | Formulario de reserva |
+| **Paleta rosado pastel y turquesa** tomada del logo y del mar; los botones y textos quedan en tonos oscuros para que se lean | `styles.css` |
+| **Foto aérea de Eagle Beach** de fondo en la frase "We set your table…", con el logo encima | Inicio |
+
+**Pendiente de Zoe**
+
+- [ ] Tarifas para residentes en florines: base de 175 AWG por persona y la tarifa exacta para grupos de más de 5 (135 o 125). Con eso armamos la casilla "Vivo en Aruba" y el aviso de documento de identidad.
+- [ ] Menú de charcutería de 15 artículos para el selector "arma tu tabla" (el cliente elige 5).
+- [ ] Fotos de eventos y del chef privado, foto de Zoe para Sobre nosotros y el logo en alta resolución.
+- [ ] Revisión de todo el contenido: preguntas frecuentes, horarios, precios y política de clima.
+- [ ] Pago pendiente de USD 300.
+
+**En pausa**
+
+- Migración al dominio en Wix: queda en pausa hasta que Zoe confirme el dominio. Mientras tanto el sitio sigue en el link temporal de GitHub Pages, sin indexar en Google.
+
+## 9b. Lo que necesitamos de Zoe
 
 **Para la semana 2 (bloquea el avance):**
 - [ ] Número de **WhatsApp** y número para **llamadas**

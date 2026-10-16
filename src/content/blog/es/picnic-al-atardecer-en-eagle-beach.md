@@ -69,4 +69,4 @@ En Aruba llueve poco, y casi siempre entre octubre y enero, en aguaceros cortos.
 
 Envíanos la fecha, el número de personas y la ocasión desde el [formulario de reserva](/es/reservar/). Te respondemos con la disponibilidad y luego planeamos contigo por WhatsApp los colores, el menú y los extras. Para apartar la fecha, pagas un abono con un link seguro.
 
-Puedes ver qué va en la mesa en la [página del picnic al atardecer](/es/picnics/picnic-al-atardecer/), o leer las [preguntas que hacen los invitados](/es/preguntas/) antes de reservar.
+Puedes ver qué va en la mesa en la [página del picnic en la hora dorada](/es/picnics/picnic-en-la-hora-dorada/), o leer las [preguntas que hacen los invitados](/es/preguntas/) antes de reservar.
